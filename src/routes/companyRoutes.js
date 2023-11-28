@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const requierAuth = require("../middlewares/requierAuth");
 const Company = mongoose.model("Company");
+const User = mongoose.model('User');
 
 const router = express.Router();
 
@@ -61,5 +62,25 @@ router.get('/company', async (req, res) => {
         res.status(500).send({error: "server error"})
     }
 })
+
+// haetaan yksittäisen käyttäjän tiedot id:n perusteella
+
+router.get("/company/:companyId/users", requierAuth, async (req, res) => {
+  try {
+    const companyId = req.params.companyId;
+    
+    const users = await User.find({company: companyId});
+    if (!users) {
+      return res.status(404).send({ error: "Käyttäjiä ei löytynyt" });
+    }
+    
+    
+    res.send(users);
+  } catch (error) {
+    console.log("backenderr", error)
+  }
+});
+
+
 
 module.exports = router;
