@@ -47,7 +47,8 @@ const worksiteSchema = new mongoose.Schema({
     info: String,
     creator: String,
     created : String,
-    imageUri: String
+    imageUri: String,
+    markerNumber : String,
   }],
   workDays: [workDaysSchema],
 });

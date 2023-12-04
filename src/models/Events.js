@@ -5,7 +5,8 @@ const eventsSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     worksite: {type: mongoose.Schema.Types.ObjectId, ref: 'Worksite'},
     timestamp: Date,
-    companyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'}
+    companyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
+    markerNumber: {type: String}
 })
 
 mongoose.model('Events', eventsSchema);

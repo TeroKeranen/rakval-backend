@@ -12,7 +12,7 @@ module.exports = (req,res, next) => {
     }
 
     // Tämä ottaa pelkän tokenin tästä =  authorization === 'Bearer <TOKEN>' 
-    const token = authorization.replace('Bearer ', '');
+    const token = authorization.replace(process.env.TOKEN_REPLACE, '');
 
     jwt.verify(token, process.env.SECRET_TOKEN, async (error, payload) => {
       if (error) {

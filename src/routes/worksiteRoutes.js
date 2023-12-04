@@ -152,6 +152,7 @@ router.delete('/worksites/:id', async (req,res) => {
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
   const {worksiteId} = req.params;
   const companyId = req.user.company;
+  
   try {
     
     const worksite = await Worksite.findById(req.params.worksiteId);
@@ -171,7 +172,8 @@ router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
       user:req.user._id,
       worksite: worksiteId,
       timestamp: new Date(),
-      companyId: companyId
+      companyId: companyId,
+      markerNumber: req.body.markerNumber
     })
 
     await event.save();
@@ -208,7 +210,8 @@ router.put('/worksites/:worksiteId/markers/:markerId', async (req,res) => {
       user:req.user._id,
       worksite: worksiteId,
       timestamp: new Date(),
-      companyId: companyId
+      companyId: companyId,
+      markerNumber: req.body.markerNumber
     })
 
     await event.save();
@@ -221,9 +224,11 @@ router.put('/worksites/:worksiteId/markers/:markerId', async (req,res) => {
 
 // Pohjakuvan merkin poistaminen
 router.delete('/worksites/:worksiteId/remove-marker/:markerId', async (req,res) => {
+  
   try {
     const companyId = req.user.company;
     const worksite = await Worksite.findById(req.params.worksiteId);
+    const { markerNumber } = req.query;
 
     if (!worksite) {
       return res.status(404).send({error: "Työmaata ei löytynyt"})
@@ -238,7 +243,8 @@ router.delete('/worksites/:worksiteId/remove-marker/:markerId', async (req,res) 
       user:req.user._id,
       worksite: req.params.worksiteId,
       timestamp: new Date(),
-      companyId: companyId
+      companyId: companyId,
+      markerNumber: markerNumber
     })
 
     await event.save();
@@ -357,6 +363,7 @@ router.post('/worksites/:worksiteId/endday', requireAuth, async (req, res) => {
 
     res.status(200).send(worksite);
   } catch (error) {
+    
     res.status(500).send({ error: "Internal Server Error" });
   }
 });
