@@ -150,7 +150,7 @@ router.delete('/worksites/:id', async (req,res) => {
 
 // Pohjakuvan mmerkkien tallentaminen
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
-  console.log(req.body);
+  
   try {
     
     const {worksiteId} = req.params;
