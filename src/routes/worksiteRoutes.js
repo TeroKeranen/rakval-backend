@@ -150,24 +150,24 @@ router.delete('/worksites/:id', async (req,res) => {
 
 // Pohjakuvan mmerkkien tallentaminen
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
-  const {worksiteId} = req.params;
-  const companyId = req.user.company;
-  console.log("1");
+  console.log(req.body);
   try {
     
-    const worksite = await Worksite.findById(req.params.worksiteId);
+    const {worksiteId} = req.params;
+    const companyId = req.user.company;
+    const worksite = await Worksite.findById(worksiteId);
     
     if (!worksite) {
       
       return res.status(404).send({ error: "työmaata ei löytynyt" });
     }
-    console.log("2");
+   
     
     worksite.markers.push(req.body);
-    console.log("3");
+    
     
     await worksite.save();
-    console.log("4");
+    res.send(worksite);
     const event = new Event({
       type: 'added-marker',
       user:req.user._id,
@@ -176,10 +176,10 @@ router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
       companyId: companyId,
       markerNumber: req.body.markerNumber
     })
-    console.log("5");
+    
 
     await event.save();
-    console.log("6");
+    
   } catch (error) {
     console.log("plääh2")
     res.status(500).send({error: error.message})
