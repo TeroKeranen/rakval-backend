@@ -43,7 +43,7 @@ router.get('/worksites/:id', async (req,res) => {
       return res.status(404).send({error: "Työmaata ei löytynyt"})
       
     }
-    
+    console.log(worksite);
     res.send(worksite);
   } catch (error) {
     res.status(500).send(error);
@@ -124,7 +124,7 @@ router.delete('/worksites/:worksiteId/workers/:workerId', async (req,res) => {
 
 // Työmaan poistaminen
 router.delete('/worksites/:id', async (req,res) => {
-
+  console.log("testi",req.params.id)
   try {
     const worksite = await Worksite.findById(req.params.id);
     
@@ -135,6 +135,7 @@ router.delete('/worksites/:id', async (req,res) => {
     if (worksite.creatorId.equals(req.user._id) || req.user.role ==='admin') {
       console.log("Työmaa poistetaan");
       await Worksite.findByIdAndDelete(req.params.id);
+      await Event.deleteMany({ worksite: req.params.id });
       res.send({message: "Työmaa poistettu"})
     } else {
       console.log("työmaata ei voi poistaa, sinulle ei ole oikeuksia")
@@ -151,10 +152,10 @@ router.delete('/worksites/:id', async (req,res) => {
 // Pohjakuvan mmerkkien tallentaminen
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
   
-  try {
-    
     const {worksiteId} = req.params;
     const companyId = req.user.company;
+  try {
+    
     const worksite = await Worksite.findById(worksiteId);
     
     if (!worksite) {
