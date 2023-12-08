@@ -43,7 +43,7 @@ router.get('/worksites/:id', async (req,res) => {
       return res.status(404).send({error: "Työmaata ei löytynyt"})
       
     }
-    console.log(worksite);
+    
     res.send(worksite);
   } catch (error) {
     res.status(500).send(error);
@@ -151,12 +151,13 @@ router.delete('/worksites/:id', async (req,res) => {
 
 // Pohjakuvan mmerkkien tallentaminen
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
-  
-    const {worksiteId} = req.params;
-    const companyId = req.user.company;
-  try {
-    
-    const worksite = await Worksite.findById(worksiteId);
+    console.log("KOITETAAN LÄHETTTÄÄ MARKERI")
+    try {
+
+      
+      const {worksiteId} = req.params;
+      const companyId = req.user.company;
+      const worksite = await Worksite.findById(worksiteId);
     
     if (!worksite) {
       
