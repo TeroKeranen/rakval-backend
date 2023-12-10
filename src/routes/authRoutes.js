@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const requierAuth = require("../middlewares/requierAuth");
 const User = mongoose.model("User");
 const Company = mongoose.model('Company')
+const Worksite = mongoose.model('Worksite')
 
 const router = express.Router();
 
@@ -94,6 +95,52 @@ router.post('/join-company', async (req,res) => {
   } catch (err) {
     res.status(422).send({error: "Jotain meni vikaan yritykseen liittyessä"})
     
+  }
+})
+
+// poistutaan yrityksestä
+router.post('/leave-company', async (req,res) => {
+  const {userId} = req.body;
+  
+  
+  try {
+    const user = await User.findById(userId)
+    
+
+    if (!user) {
+      return res.status(404).send({error: "User not found"})
+    }
+
+    if (!user.company) {
+      return res.status(400).send({error: "User is not part of any company"})
+    }
+
+    const companyId = user.company;
+    
+
+    // poista käyttäjä yrityksen workers listalta
+    const company = await Company.findById(companyId);
+    if (company) {
+      const index = company.workers.indexOf(userId);
+      if (index > -1) {
+        company.workers.splice(index, 1);
+        await company.save();
+      }
+    }
+    // poista käyttäjä kaikilta kyseisen yrityksen työmailta
+    const worksites = await Worksite.find({company: companyId});
+    for (const worksite of worksites) {
+      const workerIndex = worksite.workers.indexOf(userId);
+      if (workerIndex > -1) {
+        worksite.workers.splice(workerIndex, 1);
+        await worksite.save();
+      }
+    }
+    user.company = null;
+    await user.save();
+    res.send({message: "user has left the company and has been removed from all associated worksites"})
+  } catch (error) {
+    res.status(422).send({ error: "Error occurred while leaving the company" });
   }
 })
 

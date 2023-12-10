@@ -63,6 +63,8 @@ router.get('/company', async (req, res) => {
     }
 })
 
+
+
 // haetaan yksittäisen käyttäjän tiedot id:n perusteella
 
 router.get("/company/:companyId/users", requierAuth, async (req, res) => {
