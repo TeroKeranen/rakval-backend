@@ -65,8 +65,6 @@ router.post("/signin", async (req, res) => {
 router.post('/join-company', async (req,res) => {
   const {userId, companyCode} = req.body;
 
-  
-  
 
 
   try {
@@ -166,6 +164,39 @@ router.get('/users/:id', requierAuth, async (req,res) => {
     res.send(user);
   } catch (error) {
     res.status(500).send({ error: "Palvelinvirhe" });
+  }
+})
+
+router.post('/change-password', requierAuth, async (req,res) => {
+  const { oldPassword, newPassword } = req.body;
+  console.log("vanhasalasana", oldPassword);
+  console.log("vanhasalasana", newPassword)
+  
+
+  if (!oldPassword || !newPassword) {
+    return res.status(422).send({error: "must provide old and new password"})
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).send({error: "User not found"})
+    }
+
+    await user.comparePassword(oldPassword);
+    
+    user.password = newPassword
+    await user.save();
+
+    res.send({message: "password successfully changed"})
+  } catch (error) {
+    if (error === false) {
+      
+      return res.status(404).send({error: "Invalid old password"})
+    }
+    
+    return res.status(422).send({error: "error changing password"})
   }
 })
 

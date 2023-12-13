@@ -56,13 +56,15 @@ userSchema.methods.comparePassword = function (candidatePassword) {
     return new Promise((resolve, reject) => {
         bcrypt.compare(candidatePassword, user.password, (err,  isMatch) => {
             if (err) {
+                
                 return reject(err);
             }
 
             if (!isMatch) {
+                
                 return reject(false);
             }
-
+            
             resolve(true);
         } )
     })
