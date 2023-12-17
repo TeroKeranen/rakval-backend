@@ -6,10 +6,12 @@ const requierAuth = require("../middlewares/requierAuth");
 const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
+const { sendVerificationEmail} = require('../utils/emailService')
 
 const router = express.Router();
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -27,20 +29,29 @@ router.post("/signup", async (req, res) => {
 
     if (existingUser) {
       
-      return res.status(400).send({error: "Try again"})
+      return res.status(400).send({error: "Käyttäjänimi on jo käytössä"})
     }
 
-    const user = new User({ email, password });
+    // Luodaan verification koodi signupin yhteydessä
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // tallennetaan verificationcode databaseen
+    const user = new User({ email, password,verificationCode });
     user.save();
+
+    // Käytetään emailService.js olevaa funtiota lähettämään käyttäjän sähköpostiin koodi
+    sendVerificationEmail(user, verificationCode)
 
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN);
     
-    res.send({token: token, user: {_id:user._id, email: user.email}})
+    res.send({token: token, user: {_id:user._id, email: user.email, isVerified: user.isVerified}})
 
   } catch (err) {
     return res.status(422).send(err.message);
   }
 });
+
+
 
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
@@ -50,22 +61,59 @@ router.post("/signin", async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+  console.log(user);
   if (!user) {
     return res.status(404).send({ error: "Email not found" });
   }
+  // if (!user.isVerified) {
+    
+  //   return res.status(401).send({error: "email not verified"})
+  // }
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN);
-    res.send({ token, user: {_id:user.id, role: user.role} });
+    res.send({ token, user: {_id:user.id, role: user.role, isVerified: user.isVerified} });
   } catch (err) {
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
 
+
+// Käytetään tätä kun asetetaan verification koodi 
+router.post('/verify', async (req,res) => {
+  
+  const {email, verificationCode} = req.body;
+  
+  
+  if (!email || !verificationCode) {
+    return res.status(422).send({error: "must provide email and verificationcode"})
+  }
+
+  try {
+    const user = await User.findOne({email})
+
+    if (!user) {
+      return res.status(404).send({error: "user not found"})
+    }
+
+    // Katsotaan onko käyttäjän antama koodi sama mikä luotiin signupin yhteydessä userin modaliin
+    if (user.verificationCode === verificationCode) {
+      user.isVerified = true;
+      user.verificationCode = null;
+      await user.save();
+
+      res.send({message: "Email successfully verified"})
+
+    } else {
+      res.status(400).send({error: "Invalid verification code"})
+    }
+  } catch (error) {
+    return res.status(500).send({error: "internal server error"})
+  }
+})
+
 router.post('/join-company', async (req,res) => {
   const {userId, companyCode} = req.body;
-
-
 
   try {
     const company = await Company.findOne({code: companyCode})
@@ -143,7 +191,7 @@ router.post('/leave-company', async (req,res) => {
 })
 
 router.get('/profile', requierAuth, async (req,res) => {
-
+  
   const user = await User.findById(req.user._id)
     .populate('company')
     .select('-password');

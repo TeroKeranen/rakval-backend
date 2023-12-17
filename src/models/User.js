@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
         required: false,
+    },
+    verificationCode: {
+        type: String,
+        required: false
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 })
 
