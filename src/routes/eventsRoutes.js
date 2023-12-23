@@ -56,7 +56,7 @@ router.get('/events', async (req, res) => {
             // Jos käyttäjä ei ole admin, hae vain hänen työmaansa tapahtumat
             const userWorksites = await Worksite.find({ workers: userId });
             const userWorksiteIds = userWorksites.map(worksite => worksite._id);
-            events = await Events.find({ worksite: { $in: userWorksiteIds }, type: "added-marker" }).populate({path:'user', select: '-password'}).populate('worksite');
+            events = await Events.find({ worksite: { $in: userWorksiteIds }, type: ["added-marker", "added-calendarmark", "updated-calendarmark"] }).populate({path:'user', select: '-password'}).populate('worksite');
         }
         
         res.send(events);

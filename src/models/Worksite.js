@@ -13,6 +13,12 @@ const workDaysSchema = new mongoose.Schema({
   }
 })
 
+const calendarEntrySchema = new mongoose.Schema({
+  date: String,
+  title: String,
+  text: String
+})
+
 
 const worksiteSchema = new mongoose.Schema({
 
@@ -51,6 +57,7 @@ const worksiteSchema = new mongoose.Schema({
     markerNumber : Number,
   }],
   workDays: [workDaysSchema],
+  calendarEntries: [calendarEntrySchema]
 });
 
 

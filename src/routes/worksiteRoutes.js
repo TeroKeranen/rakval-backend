@@ -373,5 +373,86 @@ router.post('/worksites/:worksiteId/endday', requireAuth, async (req, res) => {
   }
 });
 
+// Luodaan post route kalenterimerkinnälle
+router.post('/worksites/:worksiteId/calendar-entry', async (req,res) => {
+  try {
+    const {date, title, text } = req.body;
+    const worksite = await Worksite.findById(req.params.worksiteId)
+
+    if (!worksite) {
+      return res.status(404).send({error: "Työmaata ei löytynyt"})
+    }
+
+    worksite.calendarEntries.push({date, title, text})
+    await worksite.save();
+
+        // Lisätään tapahtuma databaseen
+        const event = new Event({
+          type: 'added-calendarmark',
+          user:req.user._id,
+          worksite: req.params.worksiteId,
+          timestamp: new Date(),
+          companyId : req.user.company,
+          calendarDate: date
+        })
+    
+        await event.save();
+
+    res.status(201).send(worksite);
+  } catch (error) {
+    res.status(500).send({error: error.message})
+  }
+})
+
+// haetaan kaikki kalenteri merkinnät
+router.get('/worksites/:worksiteId/calendar-entries', async (req,res) => {
+  try {
+    const worksite = await Worksite.findById(req.params.worksiteId);
+    if (!worksite) {
+      return res.status(404).send({error: "Työmaata ei löytynyt"})
+    }
+    res.send(worksite.calendarEntries);
+  } catch (error) {
+    res.status(500).send({error: error.message})
+  }
+})
+
+// Päivitetään kalenteri merkintää
+router.put('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) => {
+  try {
+    const {worksiteId, entryId } = req.params;
+    const { date, title, text } = req.body;
+    const worksite = await Worksite.findById(worksiteId);
+
+    if (!worksite) {
+      return res.status(404).send({error: "Työmaata ei löytynyt (update)"})
+    }
+
+    const entryIndex = worksite.calendarEntries.findIndex(entry => entry._id.toString() === entryId);
+    if (entryIndex === -1 ) {
+      return res.status(404).send({error: "Merkintää ei löytynyt"})
+    }
+
+    worksite.calendarEntries[entryIndex] = { ...worksite.calendarEntries[entryIndex], date,title,text}
+    await worksite.save();
+
+    // Lisätään tapahtuma databaseen
+    const event = new Event({
+      type: 'updated-calendarmark',
+      user:req.user._id,
+      worksite: req.params.worksiteId,
+      timestamp: new Date(),
+      companyId : req.user.company,
+      calendarDate: date
+    })
+
+    await event.save();
+    
+    res.status(200).send(worksite);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+})
+
 
 module.exports = router;
