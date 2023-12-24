@@ -454,5 +454,45 @@ router.put('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) => 
   }
 })
 
+router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) => {
+  
+  try {
+    const {worksiteId, entryId} = req.params;
+    const { date } = req.query;
+    console.log(date)
+    
+    const worksite = await Worksite.findById(worksiteId);
+    
+    if (!worksite) {
+      res.status(404).send({error: "Työmaata ei löytynyt"})
+    }
+    const entryIndex = worksite.calendarEntries.findIndex(entry => entry._id.toString() === entryId);
+    
+    if (entryIndex === -1 ) {
+      return res.status(404).send({error: "Merkintää ei löytynyt"})
+    }
+
+    worksite.calendarEntries.splice(entryIndex, 1)
+    await worksite.save();
+
+    // Lisää tapahtuma databaseen, jos se on tarpeen
+    const event = new Event({
+      type: 'deleted-calendarmark',
+      user: req.user._id,
+      worksite: worksiteId,
+      timestamp: new Date(),
+      companyId: req.user.company,
+      calendarDate: date
+      
+      // Lisää muita tarvittavia tietoja
+    });
+    await event.save();
+
+    res.status(200).send(worksite);
+  } catch (error) {
+    console.log("kalenteripoisto", error);
+  }
+})
+
 
 module.exports = router;
