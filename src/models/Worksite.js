@@ -44,8 +44,11 @@ const worksiteSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
     },
   ],
-  floorplanKey: {
-    type: String,
+  // floorplanKey: {
+  //   type: String,
+  // },
+  floorplanKeys: {
+    type: [String]
   },
   markers: [{
     x: Number,
@@ -55,6 +58,7 @@ const worksiteSchema = new mongoose.Schema({
     created : String,
     imageUri: String,
     markerNumber : Number,
+    floorplanIndex: Number
   }],
   workDays: [workDaysSchema],
   calendarEntries: [calendarEntrySchema]

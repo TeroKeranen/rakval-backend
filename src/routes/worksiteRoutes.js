@@ -79,6 +79,29 @@ router.post("/worksites",  async (req,res) => {
   
 })
 
+// lähetetään floorplankey kuvaa varten
+router.post('/worksites/:worksiteId/floorplan', async (req,res) => {
+  const {worksiteId} = req.params;
+  const { floorplanKey } = req.body;
+  console.log(worksiteId);
+  console.log(floorplanKey);
+  try {
+    const worksite = await Worksite.findById(worksiteId);
+    if (!worksite) {
+      return res.status(404).send({error: "Työmaata ei löytynyt"})
+    }
+
+    worksite.floorplanKeys = worksite.floorplanKeys || [];
+    worksite.floorplanKeys.push(floorplanKey)
+    // worksite.floorplanKey = floorplanKey;
+    await worksite.save();
+
+    res.send(worksite);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+})
+
 // lisätään työntekijä työmaahan
 router.post("/worksites/:worksiteId/add-worker", async (req,res) => {
   try {
@@ -454,6 +477,7 @@ router.put('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) => 
   }
 })
 
+// kalenteri merkkinnän poisto
 router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) => {
   
   try {
