@@ -82,17 +82,20 @@ router.post("/worksites",  async (req,res) => {
 // lähetetään floorplankey kuvaa varten
 router.post('/worksites/:worksiteId/floorplan', async (req,res) => {
   const {worksiteId} = req.params;
-  const { floorplanKey } = req.body;
-  console.log(worksiteId);
-  console.log(floorplanKey);
+  // const { floorplanKey } = req.body;
+  const { key, title } = req.body;
+  
+  // console.log(floorplanKey);
   try {
     const worksite = await Worksite.findById(worksiteId);
     if (!worksite) {
       return res.status(404).send({error: "Työmaata ei löytynyt"})
     }
 
-    worksite.floorplanKeys = worksite.floorplanKeys || [];
-    worksite.floorplanKeys.push(floorplanKey)
+
+    // worksite.floorplanKeys = worksite.floorplanKeys || [];
+    const newFloorplan = {key, title}
+    worksite.floorplanKeys.push(newFloorplan);
     // worksite.floorplanKey = floorplanKey;
     await worksite.save();
 

@@ -19,6 +19,11 @@ const calendarEntrySchema = new mongoose.Schema({
   text: String
 })
 
+const floorplanSchema = new mongoose.Schema({
+  key: String,
+  title: String
+})
+
 
 const worksiteSchema = new mongoose.Schema({
 
@@ -47,9 +52,7 @@ const worksiteSchema = new mongoose.Schema({
   // floorplanKey: {
   //   type: String,
   // },
-  floorplanKeys: {
-    type: [String]
-  },
+  floorplanKeys: [floorplanSchema],
   markers: [{
     x: Number,
     y: Number,
