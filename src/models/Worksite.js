@@ -44,6 +44,10 @@ const worksiteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  worktype: {
+    type: String,
+    required: true
+  },
   workers: [
     {
       type: mongoose.Schema.Types.ObjectId,
