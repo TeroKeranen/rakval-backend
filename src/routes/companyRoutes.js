@@ -49,6 +49,7 @@ router.post('/createCompany', async (req,res) => {
 
 // Haetaan yritys
 router.get('/company', async (req, res) => {
+  console.log("terererer")
     try {
         const company = await Company.findOne({adminId: req.user._id})
         
@@ -61,6 +62,11 @@ router.get('/company', async (req, res) => {
     } catch (error) {
         res.status(500).send({error: "server error"})
     }
+})
+
+router.get('/testi', async (req,res) => {
+  let testt= "tissit"
+  res.send(testt)
 })
 
 

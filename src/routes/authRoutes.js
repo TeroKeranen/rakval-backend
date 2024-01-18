@@ -15,6 +15,7 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
+  
 
   if (!email || !password) {
     return res.status(422).send({ error: "Must provide email and password" });
@@ -52,16 +53,16 @@ router.post("/signup", async (req, res) => {
 });
 
 
-
+// Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(email)
   if (!email || !password) {
     return res.status(422).send({ error: "Must provide email and password" });
   }
 
   const user = await User.findOne({ email });
-  console.log(user);
+  
   if (!user) {
     return res.status(404).send({ error: "Email not found" });
   }
@@ -72,11 +73,14 @@ router.post("/signin", async (req, res) => {
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN);
-    res.send({ token, user: {_id:user.id, role: user.role, isVerified: user.isVerified} });
+    console.log("token", token);
+    res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} });
   } catch (err) {
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
+
+//tähän tulee web sivun signin reitti jolla luodaan uusi tokeni webille.
 
 
 // Käytetään tätä kun asetetaan verification koodi 
@@ -84,8 +88,9 @@ router.post('/verify', async (req,res) => {
   
   const {email, verificationCode} = req.body;
   
-  
+  console.log(typeof(verificationCode));
   if (!email || !verificationCode) {
+    console.log("virhe1")
     return res.status(422).send({error: "must provide email and verificationcode"})
   }
 
@@ -93,6 +98,7 @@ router.post('/verify', async (req,res) => {
     const user = await User.findOne({email})
 
     if (!user) {
+      console.log("virhe2")
       return res.status(404).send({error: "user not found"})
     }
 
@@ -105,9 +111,11 @@ router.post('/verify', async (req,res) => {
       res.send({message: "Email successfully verified"})
 
     } else {
+      console.log("virhe3")
       res.status(400).send({error: "Invalid verification code"})
     }
   } catch (error) {
+    console.log("virhe4")
     return res.status(500).send({error: "internal server error"})
   }
 })
@@ -191,7 +199,7 @@ router.post('/leave-company', async (req,res) => {
 })
 
 router.get('/profile', requierAuth, async (req,res) => {
-  
+  console.log("sisisi")
   const user = await User.findById(req.user._id)
     .populate('company')
     .select('-password');
@@ -202,6 +210,7 @@ router.get('/profile', requierAuth, async (req,res) => {
 
 
 router.get('/users/:id', requierAuth, async (req,res) => {
+  console.log("nyt");
   try {
     const userId = req.params.id;
     const user = await User.findById(userId).select('-password')

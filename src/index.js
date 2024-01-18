@@ -11,14 +11,17 @@ const worksiteRoutes = require('./routes/worksiteRoutes')
 const companyRoutes = require('./routes/companyRoutes')
 const eventsRoutes = require('./routes/eventsRoutes')
 const requireAuth = require('./middlewares/requierAuth')
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(authRoutes);
 app.use(worksiteRoutes);
 app.use(companyRoutes);
 app.use(eventsRoutes);
+
 
 
 
