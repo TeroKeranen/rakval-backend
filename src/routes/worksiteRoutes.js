@@ -13,6 +13,7 @@ router.use(requireAuth);
 // haetaan työmaat
 router.get('/worksites', async (req,res) => {
   console.log("Received request for worksites");
+  console.log("haeatanannananana")
   try {
     const userId = req.user._id;
     

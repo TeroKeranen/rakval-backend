@@ -64,10 +64,6 @@ router.get('/company', async (req, res) => {
     }
 })
 
-router.get('/testi', async (req,res) => {
-  let testt= "tissit"
-  res.send(testt)
-})
 
 
 
