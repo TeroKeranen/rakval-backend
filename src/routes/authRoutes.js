@@ -257,4 +257,10 @@ router.post('/change-password', requierAuth, async (req,res) => {
   }
 })
 
+router.get('/aws-url', requierAuth, async (req,res) => {
+  const title = "terve"
+
+  res.send(title);
+})
+
 module.exports = router;
