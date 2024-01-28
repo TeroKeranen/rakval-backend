@@ -259,6 +259,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
 
 router.get('/aws-url', requierAuth, async (req,res) => {
   const awsUrl = process.env.AWS_URL
+  console.log(awsUrl)
   
   try {
     
