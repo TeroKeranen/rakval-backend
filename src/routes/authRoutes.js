@@ -210,7 +210,7 @@ router.get('/profile', requierAuth, async (req,res) => {
 
 
 router.get('/users/:id', requierAuth, async (req,res) => {
-  console.log("nyt");
+  
   try {
     const userId = req.params.id;
     const user = await User.findById(userId).select('-password')
@@ -258,9 +258,15 @@ router.post('/change-password', requierAuth, async (req,res) => {
 })
 
 router.get('/aws-url', requierAuth, async (req,res) => {
-  const title = "terve"
+  const awsUrl = process.env.AWS_URL
+  
+  try {
+    
+    res.send(awsUrl);
+  } catch (error) {
+    console.log(error)
+  }
 
-  res.send(title);
 })
 
 module.exports = router;
