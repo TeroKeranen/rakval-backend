@@ -51,8 +51,11 @@ router.post('/createCompany', async (req,res) => {
 router.get('/company', async (req, res) => {
   console.log("terererer")
     try {
+        console.log("USER", req.user);
         const company = await Company.findOne({adminId: req.user._id})
-        
+        if (company) {
+          console.log("yritys löytyy")
+        }
         if (!company) {
             return res.status(404).send({error: 'yritystä ei löydy'})
         }
