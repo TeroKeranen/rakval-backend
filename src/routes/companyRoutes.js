@@ -49,13 +49,17 @@ router.post('/createCompany', async (req,res) => {
 
 // Haetaan yritys
 router.get('/company', async (req, res) => {
-  console.log("terererer")
+  
     try {
-        console.log("USER", req.user);
-        const company = await Company.findOne({adminId: req.user._id})
-        if (company) {
-          console.log("yritys löytyy")
-        }
+
+        const userId = req.user._id;
+        const company = await Company.findOne({
+          $or:[
+            {adminId: userId},
+            {workers: userId}
+          ]
+        })
+       
         if (!company) {
             return res.status(404).send({error: 'yritystä ei löydy'})
         }
