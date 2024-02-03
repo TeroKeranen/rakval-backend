@@ -80,7 +80,7 @@ router.get("/company/:companyId/users", requierAuth, async (req, res) => {
   try {
     const companyId = req.params.companyId;
     
-    const users = await User.find({company: companyId});
+    const users = await User.find({company: companyId}).select('-password');
     if (!users) {
       return res.status(404).send({ error: "Käyttäjiä ei löytynyt" });
     }

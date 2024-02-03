@@ -224,6 +224,8 @@ router.get('/users/:id', requierAuth, async (req,res) => {
   }
 })
 
+
+
 router.post('/change-password', requierAuth, async (req,res) => {
   const { oldPassword, newPassword } = req.body;
   console.log("vanhasalasana", oldPassword);
