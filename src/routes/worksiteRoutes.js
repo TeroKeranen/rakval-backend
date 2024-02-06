@@ -117,10 +117,13 @@ router.post("/worksites/:worksiteId/add-worker", async (req,res) => {
       return res.status(404).send({error: "Työmaata ei löytynyt"})
     }
 
-    if (!worksite.workers.includes(workerId)) {
-      worksite.workers.push(workerId)
-      await worksite.save();
+    if (worksite.workers.includes(workerId)) {
+      return res.status(200).send({message: "työntekijä on jo lisätty työmaalle"})
     }
+
+    worksite.workers.push(workerId)
+    await worksite.save();
+
     res.status(200).send(worksite);
     // console.log("worksiteID", worksiteId)
     // console.log("workerID", workerId)
