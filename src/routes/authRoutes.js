@@ -12,6 +12,14 @@ const router = express.Router();
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+// Funktion luominen access tokenin luomiseen
+function generateAccessToken(user) {
+  return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '15m' })
+}
+// Funktion luominen refresh tokenin luomiseen
+function generateRefreshToken(user) {
+  return jwt.sign({ userId: user._id }, process.env.REFRESH_TOKEN, { expiresIn: '7d' });
+}
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -43,9 +51,12 @@ router.post("/signup", async (req, res) => {
     // Käytetään emailService.js olevaa funtiota lähettämään käyttäjän sähköpostiin koodi
     sendVerificationEmail(user, verificationCode)
 
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN);
+    // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN); //MUUTOS
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
     
-    res.send({token: token, user: {_id:user._id, email: user.email, isVerified: user.isVerified}})
+    // res.send({token: token, user: {_id:user._id, email: user.email, isVerified: user.isVerified}}) //MUUTOS
+    res.send({accessToken, refreshToken, user:{_id:user._id, email:user.email, isVerified:user.isVerified}})
 
   } catch (err) {
     return res.status(422).send(err.message);
@@ -72,15 +83,38 @@ router.post("/signin", async (req, res) => {
   // }
   try {
     await user.comparePassword(password);
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN);
-    console.log("token", token);
-    res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} });
+    // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN); // MUUTOS
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    user.refreshToken = refreshToken
+    await user.save();
+    res.send({ accessToken, refreshToken, user: { email: user.email, _id: user.id, role: user.role, isVerified: user.isVerified } });
+    // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
 
-//tähän tulee web sivun signin reitti jolla luodaan uusi tokeni webille.
+router.post('/refresh', async (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+      return res.status(401).send({ error: 'Refresh token required' });
+  }
+
+  try {
+      const payload = jwt.verify(token, process.env.REFRESH_TOKEN);
+      const user = await User.findOne({ refreshToken: token });
+
+      if (!user) {
+          return res.status(401).send({ error: 'Invalid refresh token' });
+      }
+
+      const newAccessToken = generateAccessToken(user);
+      res.send({ accessToken: newAccessToken });
+  } catch (error) {
+      return res.status(401).send({ error: 'Invalid or expired refresh token' });
+  }
+});
 
 
 // Käytetään tätä kun asetetaan verification koodi 

@@ -15,7 +15,7 @@ module.exports = (req,res, next) => {
     // Tämä ottaa pelkän tokenin tästä =  authorization === 'Bearer <TOKEN>' 
     const token = authorization.replace(process.env.TOKEN_REPLACE, '');
 
-    jwt.verify(token, process.env.SECRET_TOKEN, async (error, payload) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN, async (error, payload) => {
       if (error) {
         console.log("vittu error");
         return res.status(401).send({ error: "You must be logged in. " });
