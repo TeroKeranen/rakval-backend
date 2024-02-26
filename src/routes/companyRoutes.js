@@ -30,6 +30,12 @@ router.post('/createCompany', async (req,res) => {
     
     try {
         
+        // Tarkistetaan onko yritys olemassa samalla nimellä
+        const existingCompany = await Company.findOne({name});
+
+        if (existingCompany) {
+          return res.status(422).send({error: "Companys name is already used"})
+        }
         
         const code = generateUniqueCode(); // luodaan yhtiölle yrityskoodi;
         
