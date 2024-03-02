@@ -68,7 +68,12 @@ const worksiteSchema = new mongoose.Schema({
     floorplanIndex: Number
   }],
   workDays: [workDaysSchema],
-  calendarEntries: [calendarEntrySchema]
+  calendarEntries: [calendarEntrySchema],
+  isReady: {
+    type: Boolean,
+    default: false,
+    require: true
+  }
 });
 
 
