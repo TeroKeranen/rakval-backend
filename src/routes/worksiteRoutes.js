@@ -291,6 +291,22 @@ router.delete('/worksites/:worksiteId/remove-marker/:markerId', async (req,res) 
   }
 })
 
+router.post('/worksites/:worksiteId/worksiteready', async(req,res) => {
+  const {worksiteId} = req.params;
+
+  try {
+    const worksite = await Worksite.findByIdAndUpdate(worksiteId, {$set: {isReady:true}}, {new: true})
+
+    if (!worksite) {
+      return res.status(404).send("työmaata ei löydy")
+    }
+    res.status(200).send(worksite);
+  } catch (error) {
+    res.status(500).send('Virhe päivittäessä työmaan tilaa.');
+  }
+
+})
+
 router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   
