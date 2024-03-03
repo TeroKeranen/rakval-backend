@@ -44,6 +44,11 @@ const worksiteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  startTime: {
+    type: String,
+    required: true,
+    
+  },
   worktype: {
     type: String,
     required: true

@@ -53,10 +53,10 @@ router.get('/worksites/:id', async (req,res) => {
 // Uuden työmaan luominen
 router.post("/worksites",  async (req,res) => {
   
-  const {address, city, workers, floorplanKey,worktype} = req.body;
-  console.log(worktype);
+  const {address, city, startTime, workers, floorplanKey,worktype} = req.body;
+  
  
-  if (!address || !city || !worktype) {
+  if (!address || !city || !worktype || !startTime) {
     return res
       .status(422)
       .send({error: "you must provide a address, city and worktype"})
@@ -70,7 +70,7 @@ router.post("/worksites",  async (req,res) => {
 
   try {
     
-    const worksite = new Worksite({address, city, workers,floorplanKey, worktype, creatorId: req.user._id, company: user.company })
+    const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, creatorId: req.user._id, company: user.company })
     await worksite.save();
     
     res.send(worksite)
