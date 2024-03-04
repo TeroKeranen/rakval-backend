@@ -12,8 +12,7 @@ router.use(requireAuth);
 
 // haetaan työmaat
 router.get('/worksites', async (req,res) => {
-  console.log("Received request for worksites");
-  console.log("haeatanannananana")
+  
   try {
     const userId = req.user._id;
     
@@ -311,8 +310,11 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   
   const {worksiteId} = req.params;
+  console.log("WORKSITEID", workerId);
   const workerId = req.user._id;
+  console.log("WORKERID", workerId)
   const companyId = req.user.company;
+  console.log("companyId", companyId)
 
   const currentDate = new Date();
   let day = currentDate.getDate().toString();
@@ -326,6 +328,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   try {
     const worksite = await Worksite.findById(worksiteId);
+    console.log("löydetty worksite", worksite);
 
     if (!worksite) return res.status(404).send({ error: "Worksite not found" });
 
@@ -344,7 +347,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
       startTime: timeOnly,
       workerId });
     
-    console.log("worksite",worksite)
+    
     await worksite.save();
     
     // Lisätään tapahtuma databaseen
