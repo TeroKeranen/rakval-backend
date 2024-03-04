@@ -310,7 +310,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   
   const {worksiteId} = req.params;
-  console.log("WORKSITEID", workerId);
+  console.log("WORKSITEID", worksiteId);
   const workerId = req.user._id;
   console.log("WORKERID", workerId)
   const companyId = req.user.company;
