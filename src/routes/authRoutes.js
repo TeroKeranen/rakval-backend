@@ -14,7 +14,7 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 
 // Funktion luominen access tokenin luomiseen
 function generateAccessToken(user) {
-  return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '15m' })
+  return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '1m' })
 }
 // Funktion luominen refresh tokenin luomiseen
 function generateRefreshToken(user) {
