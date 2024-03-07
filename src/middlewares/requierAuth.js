@@ -17,14 +17,14 @@ module.exports = (req,res, next) => {
 
     jwt.verify(token, process.env.ACCESS_TOKEN, async (error, payload) => {
       if (error) {
-        console.log("vittu error");
+        
         return res.status(401).send({ error: "You must be logged in. " });
       }
       
       const { userId } = payload;
 
       const user = await User.findById(userId);
-      console.log(user);
+      
       req.user = user;
       next();
     });

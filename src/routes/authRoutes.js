@@ -67,7 +67,7 @@ router.post("/signup", async (req, res) => {
 // Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email)
+  
   if (!email || !password) {
     return res.status(422).send({ error: "Must provide email and password" });
   }
@@ -122,7 +122,7 @@ router.post('/verify', async (req,res) => {
   
   const {email, verificationCode} = req.body;
   
-  console.log(typeof(verificationCode));
+  
   if (!email || !verificationCode) {
     console.log("virhe1")
     return res.status(422).send({error: "must provide email and verificationcode"})
@@ -262,8 +262,7 @@ router.get('/users/:id', requierAuth, async (req,res) => {
 
 router.post('/change-password', requierAuth, async (req,res) => {
   const { oldPassword, newPassword } = req.body;
-  console.log("vanhasalasana", oldPassword);
-  console.log("vanhasalasana", newPassword)
+  
   
 
   if (!oldPassword || !newPassword) {
@@ -295,7 +294,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
 
 router.get('/aws-url', requierAuth, async (req,res) => {
   const awsUrl = process.env.AWS_URL
-  console.log(awsUrl)
+  
   
   try {
     

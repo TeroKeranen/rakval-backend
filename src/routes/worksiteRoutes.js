@@ -153,7 +153,7 @@ router.delete('/worksites/:worksiteId/workers/:workerId', async (req,res) => {
 
 // Työmaan poistaminen
 router.delete('/worksites/:id', async (req,res) => {
-  console.log("testi",req.params.id)
+  
   try {
     const worksite = await Worksite.findById(req.params.id);
     
@@ -310,11 +310,11 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   
   const {worksiteId} = req.params;
-  console.log("WORKSITEID", worksiteId);
+  
   const workerId = req.user._id;
-  console.log("WORKERID", workerId)
+  
   const companyId = req.user.company;
-  console.log("companyId", companyId)
+  
 
   const currentDate = new Date();
   let day = currentDate.getDate().toString();
@@ -328,7 +328,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   try {
     const worksite = await Worksite.findById(worksiteId);
-    console.log("löydetty worksite", worksite);
+    
 
     if (!worksite) return res.status(404).send({ error: "Worksite not found" });
 
@@ -365,7 +365,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
     res.status(200).send(worksite);
     
   } catch (error) {
-
+    console.log("Virhe työpäivän aloittamisessa:", error);
     res.status(500).send({ error: "Internal Server Error" });
 
   }
@@ -509,7 +509,7 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
   try {
     const {worksiteId, entryId} = req.params;
     const { date } = req.query;
-    console.log(date)
+    
     
     const worksite = await Worksite.findById(worksiteId);
     
