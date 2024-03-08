@@ -97,6 +97,7 @@ router.post("/signin", async (req, res) => {
 
 router.post('/refresh', async (req, res) => {
   console.log("REFRESHHH");
+  console.log("reqbody", req.body)
   const { token } = req.body;
   console.log("TOKEEEN", token);
   if (!token) {
