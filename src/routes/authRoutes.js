@@ -95,29 +95,27 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post('/refresh', async (req, res) => {
-  console.log("REFRESHHH");
-  console.log("reqbody", req.body)
-  const { token } = req.body;
-  console.log("TOKEEEN", token);
-  if (!token) {
-      return res.status(401).send({ error: 'Refresh token required' });
-  }
+router.post('/refresh', async (req,res) => {
+  const refreshToken = req.body.token;
 
+  if (!refreshToken) {
+    return res.status(401).send({error: 'Refresh token required'})
+  }
   try {
-      const payload = jwt.verify(token, process.env.REFRESH_TOKEN);
-      const user = await User.findOne({ refreshToken: token });
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN)
+    const userId = decoded.userId;
 
-      if (!user) {
-          return res.status(401).send({ error: 'Invalid refresh token' });
-      }
+    const user = await User.findById(userId);
 
-      const newAccessToken = generateAccessToken(user);
-      res.send({ accessToken: newAccessToken });
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(403).send({error: 'invalid refres token'})
+    }
+    const newAccessToken = generateAccessToken(user);
+    res.send({accessToken: newAccessToken})
   } catch (error) {
-      return res.status(401).send({ error: 'Invalid or expired refresh token' });
+    return res.status(403).send({error: 'invalid or expired refresh token'})
   }
-});
+})
 
 
 // Käytetään tätä kun asetetaan verification koodi 
