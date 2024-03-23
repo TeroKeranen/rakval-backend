@@ -104,16 +104,17 @@ router.post('/refresh', async (req,res) => {
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN)
+    console.log("decoded", decoded);
     const userId = decoded.userId;
 
     const user = await User.findById(userId);
-
+    
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(403).send({error: 'invalid refres token'})
     }
     const newAccessToken = generateAccessToken(user);
     console.log("authroutes newaccesstoken", newAccessToken)
-    res.send({accessToken: newAccessToken})
+    res.send({accessToken: newAccessToken, refreshToken: refreshToken})
   } catch (error) {
     return res.status(403).send({error: 'invalid or expired refresh token'})
   }
