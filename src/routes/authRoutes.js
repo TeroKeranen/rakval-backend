@@ -112,6 +112,7 @@ router.post('/refresh', async (req,res) => {
       return res.status(403).send({error: 'invalid refres token'})
     }
     const newAccessToken = generateAccessToken(user);
+    console.log("authroutes newaccesstoken", newAccessToken)
     res.send({accessToken: newAccessToken})
   } catch (error) {
     return res.status(403).send({error: 'invalid or expired refresh token'})
@@ -260,7 +261,7 @@ router.get('/users/:id', requierAuth, async (req,res) => {
     if (!user) {
       return res.status(404).send({error: "käyttäjää ei löytynyt"})
     }
-    console.log("authroute rrr", user);
+    
     res.send(user);
   } catch (error) {
     res.status(500).send({ error: "Palvelinvirhe" });
