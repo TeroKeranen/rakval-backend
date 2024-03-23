@@ -55,7 +55,7 @@ router.post('/createCompany', async (req,res) => {
 
 // Haetaan yritys
 router.get('/company', async (req, res) => {
-  
+
     try {
 
         const userId = req.user._id;
@@ -71,7 +71,7 @@ router.get('/company', async (req, res) => {
         }
 
         res.send(company);
-
+        console.log("Haetaan company tiedot", company);
     } catch (error) {
         res.status(500).send({error: "server error"})
     }
