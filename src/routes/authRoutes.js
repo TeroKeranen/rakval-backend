@@ -88,8 +88,8 @@ router.post("/signin", async (req, res) => {
     const refreshToken = generateRefreshToken(user);
     user.refreshToken = refreshToken
     await user.save();
-    console.log("SIGNIN", user)
-    res.send({ accessToken, refreshToken, user: { email: user.email, _id: user.id, role: user.role, isVerified: user.isVerified } });
+    
+    res.send({ accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
     return res.status(422).send({ error: "invalid password or email" });
