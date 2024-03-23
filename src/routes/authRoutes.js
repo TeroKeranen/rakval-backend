@@ -98,7 +98,7 @@ router.post("/signin", async (req, res) => {
 
 router.post('/refresh', async (req,res) => {
   const refreshToken = req.body.token;
-
+  console.log("refress refreshtoken", refreshToken)
   if (!refreshToken) {
     return res.status(401).send({error: 'Refresh token required'})
   }
