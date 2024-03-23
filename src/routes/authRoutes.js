@@ -248,7 +248,14 @@ router.get('/users/:id', requierAuth, async (req,res) => {
   
   try {
     const userId = req.params.id;
+    console.log("authROutes", userId);
     const user = await User.findById(userId).select('-password')
+
+    if (user) {
+      console.log("user löydetty")
+    } else {
+      console.log("useria ei löydetty");
+    }
     if (!user) {
       return res.status(404).send({error: "käyttäjää ei löytynyt"})
     }
