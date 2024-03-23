@@ -260,7 +260,7 @@ router.get('/users/:id', requierAuth, async (req,res) => {
     if (!user) {
       return res.status(404).send({error: "käyttäjää ei löytynyt"})
     }
-    
+    console.log("authroute rrr", user);
     res.send(user);
   } catch (error) {
     res.status(500).send({ error: "Palvelinvirhe" });
