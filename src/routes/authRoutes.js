@@ -108,7 +108,7 @@ router.post('/logout', async (req, res) => {
       return res.status(400).send({ error: "Invalid refresh token" });
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
     const userId = decoded.userId;
 
     await User.updateOne(
