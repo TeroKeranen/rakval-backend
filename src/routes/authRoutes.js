@@ -67,7 +67,7 @@ router.post("/signup", async (req, res) => {
 // Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-  console.log("email ja password", email)
+  console.log("email ja password", email, password)
   if (!email || !password) {
     return res.status(422).send({ error: "Must provide email and password" });
   }
@@ -94,6 +94,7 @@ router.post("/signin", async (req, res) => {
     res.send({ accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
+    console.log("error login", err);
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
