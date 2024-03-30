@@ -99,6 +99,27 @@ router.post("/signin", async (req, res) => {
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
+router.post('/logout', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(400).send({ error: "Refresh token is required" });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const userId = decoded.userId;
+    console.log("logout userId", userId)
+    // Päivittää käyttäjän, poistamalla kyseisen refresh tokenin
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { refreshToken: refreshToken } }
+    );
+
+    res.status(200).send({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+});
 
 router.post('/refresh', async (req,res) => {
   const refreshToken = req.body.token;
