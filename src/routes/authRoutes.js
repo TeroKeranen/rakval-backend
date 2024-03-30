@@ -117,6 +117,7 @@ router.post('/logout', async (req, res) => {
 
     res.status(200).send({ message: "Logged out successfully" });
   } catch (error) {
+    console.error("Logout error: ", error);
     res.status(500).send({ error: "Internal Server Error" });
   }
 });
