@@ -66,6 +66,15 @@ router.post("/signup", async (req, res) => {
 
 // Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
+  const users = await User.find({}); // Hakee kaikki käyttäjät
+
+users.forEach(async (user) => {
+  if (typeof user.refreshToken === 'string') {
+    user.refreshToken = [user.refreshToken]; // Muuttaa olemassa olevan stringin taulukoksi
+    user.refreshToken = undefined; // Poistaa vanhan string-kentän
+    await user.save();
+  }
+});
   const { email, password } = req.body;
   console.log("email ja password", email, password)
   if (!email || !password) {
