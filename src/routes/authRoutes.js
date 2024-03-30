@@ -86,8 +86,10 @@ router.post("/signin", async (req, res) => {
     // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN); // MUUTOS
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
-    user.refreshToken = refreshToken
+    user.refreshToken.push(refreshToken);
     await user.save();
+    // user.refreshToken = refreshToken
+    // await user.save();
     
     res.send({ accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
@@ -109,8 +111,11 @@ router.post('/refresh', async (req,res) => {
 
     const user = await User.findById(userId);
     
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(403).send({error: 'invalid refres token'})
+    // if (!user || user.refreshToken !== refreshToken) {
+    //   return res.status(403).send({error: 'invalid refres token'})
+    // }
+    if (!user || !user.refreshToken.includes(refreshToken)) {
+      return res.status(403).send({error: 'invalid refresh token'})
     }
     const newAccessToken = generateAccessToken(user);
     console.log("authroutes newaccesstoken", newAccessToken)

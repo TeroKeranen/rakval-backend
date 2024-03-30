@@ -31,10 +31,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    refreshToken: {
+    refreshToken: [{
         type:String,
         required: false
-    }
+    }]
 })
 
 // tämä ajaa ennen kuin save tapahtuu
