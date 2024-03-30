@@ -67,13 +67,13 @@ router.post("/signup", async (req, res) => {
 // Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-  
+  console.log("email ja password", email)
   if (!email || !password) {
     return res.status(422).send({ error: "Must provide email and password" });
   }
 
   const user = await User.findOne({ email });
-  
+  console.log("käyttäjä", user)
   if (!user) {
     return res.status(404).send({ error: "Email not found" });
   }
