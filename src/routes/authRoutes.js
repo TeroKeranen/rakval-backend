@@ -100,22 +100,23 @@ router.post("/signin", async (req, res) => {
   }
 });
 router.post('/logout', async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken) {
-    return res.status(400).send({ error: "Refresh token is required" });
-  }
-
   try {
+    const { refreshToken } = req.body;
+    console.log("Received refreshToken:", refreshToken); // Tarkista tokenin arvo
+
+    if (!refreshToken || typeof refreshToken !== 'string') {
+      return res.status(400).send({ error: "Invalid refresh token" });
+    }
+
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const userId = decoded.userId;
-    console.log("logout userId", userId)
-    // Päivittää käyttäjän, poistamalla kyseisen refresh tokenin
+
     await User.updateOne(
       { _id: userId },
-      { $pull: { refreshToken: refreshToken } }
+      { $pull: { refreshTokens: refreshToken } }
     );
 
-    res.status(200).send({ message: "Logged out successfully" });
+    res.status(200).send({ message: "Successfully logged out" });
   } catch (error) {
     console.error("Logout error: ", error);
     res.status(500).send({ error: "Internal Server Error" });
