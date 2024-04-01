@@ -113,7 +113,7 @@ router.post('/logout', async (req, res) => {
 
     await User.updateOne(
       { _id: userId },
-      { $pull: { refreshTokens: refreshToken } }
+      { $pull: { refreshToken: refreshToken } }
     );
 
     res.status(200).send({ message: "Successfully logged out" });
