@@ -53,6 +53,10 @@ const worksiteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  duehours: {
+    type: Number,
+
+  },
   workers: [
     {
       type: mongoose.Schema.Types.ObjectId,
