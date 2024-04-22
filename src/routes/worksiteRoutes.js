@@ -52,7 +52,7 @@ router.get('/worksites/:id', async (req,res) => {
 // Uuden työmaan luominen
 router.post("/worksites",  async (req,res) => {
   
-  const {address, city, startTime, workers, floorplanKey,worktype} = req.body;
+  const {address, city, startTime, workers, floorplanKey,worktype, duehours} = req.body;
   
  
   if (!address || !city || !worktype || !startTime) {
@@ -69,7 +69,7 @@ router.post("/worksites",  async (req,res) => {
 
   try {
     
-    const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, creatorId: req.user._id, company: user.company })
+    const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, duehours, creatorId: req.user._id, company: user.company })
     await worksite.save();
     
     res.send(worksite)
