@@ -11,26 +11,7 @@ const { sendVerificationEmail} = require('../utils/emailService')
 const router = express.Router();
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const updateCompanies = async () => {
-  try {
-    const results = await Company.updateMany(
-      {}, 
-      {
-        $set: {
-          isPaid: false, // Oletusarvo, koska se on 'required'
-          subscriptionEndDate: null // Tämä voi olla 'null', koska päivämäärä ei ole pakollinen
-        }
-      }
-    );
-    console.log('Updated companies:', results);
-    mongoose.disconnect();
-  } catch (err) {
-    console.error('Error updating companies:', err);
-    mongoose.disconnect();
-  }
-};
 
-updateCompanies();
 // Funktion luominen access tokenin luomiseen
 function generateAccessToken(user) {
   return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '1m' })

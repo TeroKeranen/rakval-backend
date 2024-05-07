@@ -67,8 +67,20 @@ router.post("/worksites",  async (req,res) => {
   if (!user.company) {
     return res.status(400).send({error: "Käyttäjällä ei ole yritystä"})
   }
+  const company = await Company.findById(user.company);
+  if (!company) {
+    return res.status(404).send({error: "Company nnot found"})
+  }
 
   try {
+
+    if (!company.isPaid) {
+      const worksitesCount = await Worksite.countDocuments({company: company._id})
+
+      if (worksitesCount >= 3) {
+        return res.status(403).send({ error: "Non-paying companies are limited to 3 worksites" });
+      }
+    }
     
     const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, duehours, creatorId: req.user._id, company: user.company })
     await worksite.save();
