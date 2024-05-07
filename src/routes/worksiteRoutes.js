@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require('express')
 const mongoose= require('mongoose');
 const Worksite = mongoose.model("Worksite");
+const Company = mongoose.model('Company')
 const User = mongoose.model('User');
 const Event = mongoose.model('Events');
 const requireAuth = require('../middlewares/requierAuth')

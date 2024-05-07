@@ -28,6 +28,14 @@ const companySchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
     },
   ],
+  isPaid: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
+  subscriptionEndDate: {
+    type: Date,
+  }
 });
 
 
