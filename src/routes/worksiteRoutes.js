@@ -86,8 +86,8 @@ router.post("/worksites",  async (req,res) => {
     
     const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, duehours, creatorId: req.user._id, company: user.company })
     await worksite.save();
-    
-    res.json({ success: true, message: "Worksite created successfully.", worksite });
+    res.send(worksite);
+    // res.json({ success: true, message: "Worksite created successfully.", worksite });
   } catch (err) {
     res.status(422).send({error: err.message})
   }
