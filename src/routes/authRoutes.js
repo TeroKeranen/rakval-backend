@@ -194,7 +194,7 @@ router.post('/join-company', async (req,res) => {
   try {
     const company = await Company.findOne({code: companyCode})
     if (!company) {
-      return res.status(400).send({error: "Invalid company code"})
+      return res.status(400).json({success: false, message: "Invalid company code"})
     }
     
     // const user = await User.findById(userId).populate('company');
@@ -213,7 +213,7 @@ router.post('/join-company', async (req,res) => {
 
     const updatedUser = await User.findById(userId).populate('company')
 
-    res.send(updatedUser);
+    res.json({success: true, data:updatedUser});
   } catch (err) {
     res.status(422).send({error: "Jotain meni vikaan yritykseen liittyessä"})
     

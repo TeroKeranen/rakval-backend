@@ -45,7 +45,7 @@ router.post('/createCompany', async (req,res) => {
 
         req.user.company = company._id; // Liitetään käyttäjän tietoihin yrityksen id
         await req.user.save();
-        res.send({success: true, company});
+        res.send(company);
     } catch (err) {
         res.status(422).send({error: err.message})
         
