@@ -65,11 +65,12 @@ router.post("/worksites",  async (req,res) => {
   const user = await User.findById(req.user._id)
   
   if (!user.company) {
-    return res.status(400).send({error: "Käyttäjällä ei ole yritystä"})
+    // return res.status(400).send({error: "Käyttäjällä ei ole yritystä"})
+    return res.status(400).json({success:false, message: "User does not belong to any company"})
   }
   const company = await Company.findById(user.company);
   if (!company) {
-    return res.status(404).send({error: "Company nnot found"})
+    return res.status(404).json({ success: false, message: "Company not found." });
   }
 
   try {
@@ -79,14 +80,14 @@ router.post("/worksites",  async (req,res) => {
 
       if (worksitesCount >= 3) {
         console.log("VIKAONTÄSSÄ")
-        return res.status(403).send({ error: "Non-paying companies are limited to 3 worksites" });
+        return res.status(403).json({ success: false, message: "Non-paying companies are limited to 3 worksites." });
       }
     }
     
     const worksite = new Worksite({address, city, startTime, workers,floorplanKey, worktype, duehours, creatorId: req.user._id, company: user.company })
     await worksite.save();
     
-    res.send(worksite)
+    res.json({ success: true, message: "Worksite created successfully.", worksite });
   } catch (err) {
     res.status(422).send({error: err.message})
   }
