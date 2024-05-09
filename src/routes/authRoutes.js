@@ -95,14 +95,14 @@ router.post("/signin", async (req, res) => {
     res.send({ accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
-    console.log("error login", err);
+    
     return res.status(422).send({ error: "invalid password or email" });
   }
 });
 router.post('/logout', async (req, res) => {
   try {
     const { refreshToken } = req.body;
-    console.log("Received refreshToken:", refreshToken); // Tarkista tokenin arvo
+    
 
     if (!refreshToken || typeof refreshToken !== 'string') {
       return res.status(400).send({ error: "Invalid refresh token" });
@@ -125,13 +125,13 @@ router.post('/logout', async (req, res) => {
 
 router.post('/refresh', async (req,res) => {
   const refreshToken = req.body.token;
-  console.log("refress refreshtoken", refreshToken)
+  
   if (!refreshToken) {
     return res.status(401).send({error: 'Refresh token required'})
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN)
-    console.log("decoded", decoded);
+    
     const userId = decoded.userId;
 
     const user = await User.findById(userId);
@@ -143,7 +143,7 @@ router.post('/refresh', async (req,res) => {
       return res.status(403).send({error: 'invalid refresh token'})
     }
     const newAccessToken = generateAccessToken(user);
-    console.log("authroutes newaccesstoken", newAccessToken)
+    
     res.send({accessToken: newAccessToken, refreshToken: refreshToken})
   } catch (error) {
     return res.status(403).send({error: 'invalid or expired refresh token'})
@@ -158,7 +158,7 @@ router.post('/verify', async (req,res) => {
   
   
   if (!email || !verificationCode) {
-    console.log("virhe1")
+    
     return res.status(422).send({error: "must provide email and verificationcode"})
   }
 
@@ -166,7 +166,7 @@ router.post('/verify', async (req,res) => {
     const user = await User.findOne({email})
 
     if (!user) {
-      console.log("virhe2")
+      
       return res.status(404).send({error: "user not found"})
     }
 
@@ -179,11 +179,11 @@ router.post('/verify', async (req,res) => {
       res.send({message: "Email successfully verified"})
 
     } else {
-      console.log("virhe3")
+      
       res.status(400).send({error: "Invalid verification code"})
     }
   } catch (error) {
-    console.log("virhe4")
+    
     return res.status(500).send({error: "internal server error"})
   }
 })
@@ -267,7 +267,7 @@ router.post('/leave-company', async (req,res) => {
 })
 
 router.get('/profile', requierAuth, async (req,res) => {
-  console.log("sisisi")
+  
   const user = await User.findById(req.user._id)
     .populate('company')
     .select('-password');
@@ -281,14 +281,9 @@ router.get('/users/:id', requierAuth, async (req,res) => {
   
   try {
     const userId = req.params.id;
-    console.log("authROutes", userId);
     const user = await User.findById(userId).select('-password')
 
-    if (user) {
-      console.log("user löydetty")
-    } else {
-      console.log("useria ei löydetty");
-    }
+    
     if (!user) {
       return res.status(404).send({error: "käyttäjää ei löytynyt"})
     }
@@ -341,7 +336,7 @@ router.get('/aws-url', requierAuth, async (req,res) => {
     
     res.send(awsUrl);
   } catch (error) {
-    console.log(error)
+    res.status(500).json({ error: "Server error while sending AWS URL" });
   }
 
 })

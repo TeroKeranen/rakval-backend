@@ -18,7 +18,7 @@ router.get('/worksites', async (req,res) => {
     const userId = req.user._id;
     
     const user = await User.findById(userId);
-    // console.log("testi", user.company);
+    
     
     if (!user.company) {
       return res.status(400).send({error: "Käyttäjällä ei ole yritystä"});
@@ -79,7 +79,7 @@ router.post("/worksites",  async (req,res) => {
       const worksitesCount = await Worksite.countDocuments({company: company._id})
 
       if (worksitesCount >= 3) {
-        console.log("VIKAONTÄSSÄ")
+        
         return res.status(403).json({ success: false, message: "Non-paying companies are limited to 3 worksites." });
       }
     }
@@ -100,7 +100,7 @@ router.post('/worksites/:worksiteId/floorplan', async (req,res) => {
   // const { floorplanKey } = req.body;
   const { key, title } = req.body;
   
-  // console.log(floorplanKey);
+  
   try {
     const worksite = await Worksite.findById(worksiteId);
     if (!worksite) {
@@ -139,8 +139,7 @@ router.post("/worksites/:worksiteId/add-worker", async (req,res) => {
     await worksite.save();
 
     res.status(200).send(worksite);
-    // console.log("worksiteID", worksiteId)
-    // console.log("workerID", workerId)
+    
   } catch (error) {
     res.status(500).send({error: "virhe työntekijän lisäämisessä työmaahan"})
   }
@@ -177,12 +176,12 @@ router.delete('/worksites/:id', async (req,res) => {
     }
 
     if (worksite.creatorId.equals(req.user._id) || req.user.role ==='admin') {
-      console.log("Työmaa poistetaan");
+      
       await Worksite.findByIdAndDelete(req.params.id);
       await Event.deleteMany({ worksite: req.params.id });
       res.send({message: "Työmaa poistettu"})
     } else {
-      console.log("työmaata ei voi poistaa, sinulle ei ole oikeuksia")
+      
       res.status(401).send({error: "ei oikeutta poistaa työmaata"})
     }
   } catch (error) {
@@ -195,7 +194,7 @@ router.delete('/worksites/:id', async (req,res) => {
 
 // Pohjakuvan mmerkkien tallentaminen
 router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
-    console.log("KOITETAAN LÄHETTTÄÄ MARKERI")
+    
     try {
 
       
@@ -227,7 +226,7 @@ router.post("/worksites/:worksiteId/add-marker", async (req, res) => {
     await event.save();
     
   } catch (error) {
-    console.log("plääh2")
+    
     res.status(500).send({error: error.message})
   }
 });
@@ -266,7 +265,7 @@ router.put('/worksites/:worksiteId/markers/:markerId', async (req,res) => {
 
     res.send(worksite);
   } catch (error) {
-    console.log(error)
+    
     res.status(500).send({error: error.message})
   }
 })
@@ -380,7 +379,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
     res.status(200).send(worksite);
     
   } catch (error) {
-    console.log("Virhe työpäivän aloittamisessa:", error);
+    
     res.status(500).send({ error: "Internal Server Error" });
 
   }
@@ -555,7 +554,7 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
 
     res.status(200).send(worksite);
   } catch (error) {
-    console.log("kalenteripoisto", error);
+    res.status(500).json({ error: "Palvelinvirhe" });
   }
 })
 

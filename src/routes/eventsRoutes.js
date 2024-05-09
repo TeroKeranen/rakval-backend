@@ -10,34 +10,6 @@ const router = express.Router();
 
 router.use(requireAuth);
 
-// router.get('/events', async (req,res) => {
-//     try {
-//         const userId = req.user._id;
-//         const isAdmin = req.user.role === 'admin';
-
-//         let events;
-
-//         if (isAdmin) {
-//             jos käyttäjä on admin, hae kaikki tapahtumat
-//             events = await Worksite.find({}).populate('events');
-//         } else {
-//             Jos käyttäjä ei ole admin, hae vain käyttäjän tapahtumat
-//             const worksites = await Worksite.find({workers: userId});
-            
-//             events = worksites.map(worksite => {
-//                 return {
-//                     worksiteId: worksite._id,
-//                     markers: worksite.markers
-//                 }
-//             })
-//         }
-//         console.log(events);
-//         res.send(events);
-//     } catch (error) {
-//         res.status(500).send({error: 'tapahtumien haku epäonnistui'})
-        
-//     }
-// })
 
 router.get('/events', async (req, res) => {
     try {

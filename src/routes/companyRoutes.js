@@ -45,7 +45,7 @@ router.post('/createCompany', async (req,res) => {
 
         req.user.company = company._id; // Liitetään käyttäjän tietoihin yrityksen id
         await req.user.save();
-        res.send(company);
+        res.send({success: true, company});
     } catch (err) {
         res.status(422).send({error: err.message})
         
@@ -71,7 +71,7 @@ router.get('/company', async (req, res) => {
         }
 
         res.send(company);
-        console.log("Haetaan company tiedot", company);
+        
     } catch (error) {
         res.status(500).send({error: "server error"})
     }
@@ -94,7 +94,8 @@ router.get("/company/:companyId/users", requierAuth, async (req, res) => {
     
     res.send(users);
   } catch (error) {
-    console.log("backenderr", error)
+    
+    res.status(500).json({ error: "Palvelinvirhe" });
   }
 });
 
