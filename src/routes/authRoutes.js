@@ -260,9 +260,9 @@ router.post('/leave-company', async (req,res) => {
     }
     user.company = null;
     await user.save();
-    res.json({success:true, message: "user has left the company and has been removed from all associated worksites"})
+    res.send({message: "user has left the company and has been removed from all associated worksites"})
   } catch (error) {
-    res.status(422).json({success:false, error: "Error occurred while leaving the company" });
+    res.status(422).send({ error: "Error occurred while leaving the company" });
   }
 })
 
