@@ -38,7 +38,7 @@ router.post("/signup", async (req, res) => {
 
     if (existingUser) {
       
-      return res.status(400).json({success:false, error: "Käyttäjänimi on jo käytössä"})
+      return res.status(400).json({success:false, message: "Käyttäjänimi on jo käytössä"})
     }
 
     // Luodaan verification koodi signupin yhteydessä
@@ -59,6 +59,7 @@ router.post("/signup", async (req, res) => {
     res.send({accessToken, refreshToken, user:{_id:user._id, email:user.email, isVerified:user.isVerified}})
 
   } catch (err) {
+    console.log("no nyt tyku error")
     return res.status(422).send(err.message);
   }
 });
