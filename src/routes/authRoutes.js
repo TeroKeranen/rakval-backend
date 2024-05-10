@@ -38,7 +38,7 @@ router.post("/signup", async (req, res) => {
 
     if (existingUser) {
       
-      return res.status(400).send({error: "Käyttäjänimi on jo käytössä"})
+      return res.status(400).send({success:false, error: "Käyttäjänimi on jo käytössä"})
     }
 
     // Luodaan verification koodi signupin yhteydessä
