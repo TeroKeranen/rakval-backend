@@ -83,8 +83,7 @@ router.post("/signin", async (req, res) => {
   //   return res.status(401).send({error: "email not verified"})
   // }
   try {
-    const respo = await user.comparePassword(password)
-    console.log("Respo",respo);
+    await user.comparePassword(password);
     // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN); // MUUTOS
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -93,7 +92,7 @@ router.post("/signin", async (req, res) => {
     // user.refreshToken = refreshToken
     // await user.save();
     
-    res.json({success:false, accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
+    res.json({success:true, accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
     
