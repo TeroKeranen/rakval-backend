@@ -83,7 +83,8 @@ router.post("/signin", async (req, res) => {
   //   return res.status(401).send({error: "email not verified"})
   // }
   try {
-    await user.comparePassword(password);
+    const respo = await user.comparePassword(password)
+    console.log("Respo",respo);
     // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN); // MUUTOS
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
