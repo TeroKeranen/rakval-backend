@@ -26,10 +26,10 @@ router.post("/signup", async (req, res) => {
   
 
   if (!email || !password) {
-    return res.status(422).send({ error: "Must provide email and password" });
+    return res.status(422).json({success:false, error: "Must provide email and password" });
   }
   if (!emailRegex.test(email)) {
-    return res.status(422).send({error: "Invalid email format"})
+    return res.status(422).json({success:false, error: "Invalid email format"})
   }
 
   try {
@@ -56,7 +56,7 @@ router.post("/signup", async (req, res) => {
     const refreshToken = generateRefreshToken(user);
     
     // res.send({token: token, user: {_id:user._id, email: user.email, isVerified: user.isVerified}}) //MUUTOS
-    res.send({accessToken, refreshToken, user:{_id:user._id, email:user.email, isVerified:user.isVerified}})
+    res.json({success:true,accessToken, refreshToken, user:{_id:user._id, email:user.email, isVerified:user.isVerified}})
 
   } catch (err) {
     return res.status(422).send(err.message);
