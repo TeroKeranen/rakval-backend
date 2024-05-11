@@ -76,7 +76,7 @@ router.post("/signin", async (req, res) => {
   const user = await User.findOne({ email });
   
   if (!user) {
-    return res.status(404).send({ error: "Email not found" });
+    return res.status(404).json({success: false, error: "Email not found" });
   }
   // if (!user.isVerified) {
     
@@ -92,11 +92,11 @@ router.post("/signin", async (req, res) => {
     // user.refreshToken = refreshToken
     // await user.save();
     
-    res.send({ accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
+    res.json({success:false, accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
     
-    return res.status(422).send({ error: "invalid password or email" });
+    return res.status(422).json({success:false, error: "invalid password or email" });
   }
 });
 router.post('/logout', async (req, res) => {
