@@ -128,20 +128,24 @@ router.post("/worksites/:worksiteId/add-worker", async (req,res) => {
 
     const worksite = await Worksite.findById(worksiteId);
     if (!worksite) {
-      return res.status(404).send({error: "Työmaata ei löytynyt"})
+      // return res.status(404).send({error: "Työmaata ei löytynyt"})
+      return res.status(404).json({success: false, message: "Työmaata ei löytynyt"})
     }
 
     if (worksite.workers.includes(workerId)) {
-      return res.status(200).send({message: "työntekijä on jo lisätty työmaalle"})
+      // return res.status(200).send({message: "työntekijä on jo lisätty työmaalle"})
+      return res.status(200).json({success: true, message: "Työntekijä on jo lisätty työmaalle", alreadyAdded: true})
     }
 
     worksite.workers.push(workerId)
     await worksite.save();
 
-    res.status(200).send(worksite);
+    // res.status(200).send(worksite);
+    res.status(200).json({success: true, data: worksite});
     
   } catch (error) {
-    res.status(500).send({error: "virhe työntekijän lisäämisessä työmaahan"})
+    // res.status(500).send({error: "virhe työntekijän lisäämisessä työmaahan"})
+      res.status(500).json({success: false, message: "Virhe työntekijän lisäämisessä työmaahan"});
   }
 })
 
