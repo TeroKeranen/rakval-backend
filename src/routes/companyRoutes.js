@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.use(requierAuth);
 
-function generateUniqueCode() {
+export function generateUniqueCode() {
      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
      const length = 10;
 

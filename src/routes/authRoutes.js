@@ -6,7 +6,8 @@ const requierAuth = require("../middlewares/requierAuth");
 const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
-const { sendVerificationEmail} = require('../utils/emailService')
+const { sendVerificationEmail} = require('../utils/emailService');
+const { generateUniqueCode } = require("./companyRoutes");
 
 const router = express.Router();
 
@@ -69,7 +70,7 @@ router.post("/signupAdmin", async (req, res) => {
   console.log("Email", email);
   console.log("pass", password);
   console.log("role",role);
-  console.log("companydetails", companyDetails);
+  console.log("companydetails", companyDetails)
 
   if (!email || !password || !companyDetails || !role) {
     return res.status(422).json({ success: false, error: "Must provide email, password, role, and company details" });
@@ -98,7 +99,7 @@ router.post("/signupAdmin", async (req, res) => {
       await user.remove();  // Poista luotu käyttäjä, jos yrityksen luonti epäonnistuu
       return res.status(422).json({ success: false, error: "Company's name is already used" });
     }
-
+    
     const code = generateUniqueCode(); // Yrityskoodin luonti
     const company = new Company({ name, address, city, code, adminId: user._id });
     await company.save();
