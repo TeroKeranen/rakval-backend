@@ -86,6 +86,7 @@ router.post("/signupAdmin", async (req, res) => {
     await user.save();
 
     // Luodaan yritys
+    console.log("comapnyDetails", companyDetails)
     const { name, address, city } = companyDetails;
     const existingCompany = await Company.findOne({ name });
     if (existingCompany) {
