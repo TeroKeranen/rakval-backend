@@ -7,9 +7,22 @@ const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
 const { sendVerificationEmail} = require('../utils/emailService');
-const { generateUniqueCode } = require("./companyRoutes");
+
 
 const router = express.Router();
+
+function generateUniqueCode() {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const length = 10;
+
+  let result ='';
+
+  for (let i = 0; i < length; i++) {
+     const randomIndex = Math.floor(Math.random() * characters.length);
+     result += characters.charAt(randomIndex);
+  }
+  return result;
+}
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
