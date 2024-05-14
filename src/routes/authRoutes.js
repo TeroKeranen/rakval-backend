@@ -8,7 +8,7 @@ const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
 const { sendVerificationEmail} = require('../utils/emailService');
 const { generateUniqueCode } = require("./companyRoutes");
-
+const requierAuth = require("../middlewares/requierAuth");
 const router = express.Router();
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

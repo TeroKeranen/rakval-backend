@@ -8,8 +8,6 @@ const User = mongoose.model('User');
 
 const router = express.Router();
 
-router.use(requierAuth);
-
 function generateUniqueCode() {
      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
      const length = 10;
@@ -22,6 +20,8 @@ function generateUniqueCode() {
      }
      return result;
 }
+router.use(requierAuth);
+
 
 // luodaan uusi yritys
 router.post('/createCompany', async (req,res) => {
