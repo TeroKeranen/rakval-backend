@@ -101,4 +101,4 @@ router.get("/company/:companyId/users", requierAuth, async (req, res) => {
 
 
 
-module.exports = {generateUniqueCode, router}
+module.exports = router;
