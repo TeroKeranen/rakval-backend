@@ -63,6 +63,66 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.post("/signupAdmin", async (req, res) => {
+  const { email, password, role, companyDetails } = req.body;
+
+  if (!email || !password || !companyDetails || !role) {
+    return res.status(422).json({ success: false, error: "Must provide email, password, role, and company details" });
+  }
+
+  if (!emailRegex.test(email)) {
+    return res.status(422).json({ success: false, error: "Invalid email format" });
+  }
+
+  try {
+    // Tarkista onko käyttäjä jo olemassa
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, error: "Username is already in use" });
+    }
+
+    // Luodaan käyttäjä
+    const user = new User({ email, password, role }); // Oletetaan että salasana hashataan User-mallissa
+    await user.save();
+
+    // Luodaan yritys
+    const { name, address, city } = companyDetails;
+    const existingCompany = await Company.findOne({ name });
+    if (existingCompany) {
+      await user.remove();  // Poista luotu käyttäjä, jos yrityksen luonti epäonnistuu
+      return res.status(422).json({ success: false, error: "Company's name is already used" });
+    }
+
+    const code = generateUniqueCode(); // Yrityskoodin luonti
+    const company = new Company({ name, address, city, code, adminId: user._id });
+    await company.save();
+
+    // Liitetään yritys käyttäjän tietoihin
+    user.company = company._id;
+    await user.save();
+
+    // Lähetetään vahvistusviesti ja palautetaan tokenit
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    sendVerificationEmail(user, verificationCode);  // Lähetä vahvistusviesti
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.json({
+      success: true,
+      accessToken,
+      refreshToken,
+      user: {
+        _id: user._id,
+        email: user.email,
+        isVerified: user.isVerified,
+        company: company._id
+      }
+    });
+
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // Tämä on mobiilisovelluksen signin reitti
 router.post("/signin", async (req, res) => {
