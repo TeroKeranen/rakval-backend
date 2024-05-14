@@ -80,10 +80,7 @@ router.post("/signup", async (req, res) => {
 router.post("/signupAdmin", async (req, res) => {
   const { email, password, role, companyDetails } = req.body;
 
-  console.log("Email", email);
-  console.log("pass", password);
-  console.log("role",role);
-  console.log("companydetails", companyDetails)
+  
 
   if (!email || !password || !companyDetails || !role) {
     return res.status(422).json({ success: false, error: "Must provide email, password, role, and company details" });
@@ -101,11 +98,12 @@ router.post("/signupAdmin", async (req, res) => {
     }
 
     // Luodaan käyttäjä
-    const user = new User({ email, password, role }); // Oletetaan että salasana hashataan User-mallissa
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const user = new User({ email, password, role, verificationCode }); // Oletetaan että salasana hashataan User-mallissa
     await user.save();
 
     // Luodaan yritys
-    console.log("comapnyDetails", companyDetails)
+    
     const { name, address, city } = companyDetails;
     const existingCompany = await Company.findOne({ name });
     if (existingCompany) {
@@ -122,7 +120,6 @@ router.post("/signupAdmin", async (req, res) => {
     await user.save();
 
     // Lähetetään vahvistusviesti ja palautetaan tokenit
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     sendVerificationEmail(user, verificationCode);  // Lähetä vahvistusviesti
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
