@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.use(requierAuth);
 
-export function generateUniqueCode() {
+function generateUniqueCode() {
      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
      const length = 10;
 
@@ -101,4 +101,4 @@ router.get("/company/:companyId/users", requierAuth, async (req, res) => {
 
 
 
-module.exports = router;
+module.exports = {generateUniqueCode, router}
