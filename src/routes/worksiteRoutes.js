@@ -568,6 +568,21 @@ router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
   console.log ("worksiteId", worksiteId);
   console.log("productname", productName);
   console.log("quantity", quantity);
+
+  try {
+    const worksite = await Worksite.findById(worksiteId);
+
+    if (!worksite) {
+      return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
+    }
+    const newProduct = { name: productName, quantity: quantity };
+    worksite.products.push(newProduct)
+    await worksite.save();
+
+    res.status(201).json({ success: true, message: "Tuote lisätty onnistuneesti", worksite });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Virhe tuotteen lisäämisessä", error: error.message });
+  }
 })
 
 
