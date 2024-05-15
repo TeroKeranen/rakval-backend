@@ -562,5 +562,13 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
   }
 })
 
+router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
+  const {worksiteId} = req.params;
+  const {productName, quantity} = req.body;
+  console.log ("worksiteId", worksiteId);
+  console.log("productname", productName);
+  console.log("quantity", quantity);
+})
+
 
 module.exports = router;

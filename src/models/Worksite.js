@@ -24,6 +24,11 @@ const floorplanSchema = new mongoose.Schema({
   title: String
 })
 
+const productSchema = new mongoose.Schema({
+  name: String,
+  quantity: Number
+})
+
 
 const worksiteSchema = new mongoose.Schema({
 
@@ -82,7 +87,8 @@ const worksiteSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     require: true
-  }
+  },
+  products: [productSchema]
 });
 
 
