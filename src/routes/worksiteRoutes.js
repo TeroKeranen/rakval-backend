@@ -561,7 +561,7 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
     res.status(500).json({ error: "Palvelinvirhe" });
   }
 })
-
+// Lisää tuote työmaalle
 router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
   const {worksiteId} = req.params;
   const {productName, quantity} = req.body;
@@ -584,6 +584,55 @@ router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
     res.status(500).json({ success: false, message: "Virhe tuotteen lisäämisessä", error: error.message });
   }
 })
+
+// muokkaa työmaan tuotetta
+router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
+  const { worksiteId, productId } = req.params;
+  const { productName, quantity } = req.body; // Oletetaan, että nämä kentät on lähetetty pyynnössä
+
+  try {
+    const worksite = await Worksite.findById(worksiteId);
+    if (!worksite) {
+      return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
+    }
+
+    // Etsi ja päivitä tuote
+    const productIndex = worksite.products.findIndex(product => product._id.toString() === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ success: false, message: "Tuotetta ei löytynyt" });
+    }
+
+    // Päivitä tuotteen tiedot
+    if (productName) worksite.products[productIndex].name = productName;
+    if (quantity) worksite.products[productIndex].quantity = quantity;
+
+    await worksite.save();
+
+    res.json({ success: true, message: "Tuote päivitetty onnistuneesti", worksite });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Virhe tuotteen päivittämisessä", error: error.message });
+  }
+});
+
+// Poista työmaasta tuote
+router.delete('/worksites/:worksiteId/products/:productId', async (req, res) => {
+  const { worksiteId, productId } = req.params;
+
+  try {
+    const worksite = await Worksite.findById(worksiteId);
+    if (!worksite) {
+      return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
+    }
+
+    // Poistetaan tuote käyttäen filter-metodia tuotteen id:n perusteella
+    worksite.products = worksite.products.filter(product => product._id.toString() !== productId);
+    await worksite.save();
+
+    res.json({ success: true, message: "Tuote poistettu onnistuneesti", worksite });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Virhe tuotteen poistamisessa", error: error.message });
+  }
+});
 
 
 module.exports = router;
