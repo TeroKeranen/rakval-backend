@@ -80,7 +80,11 @@ router.post("/signup", async (req, res) => {
 router.post("/signupAdmin", async (req, res) => {
   const { email, password, role, companyDetails } = req.body;
 
-  
+  console.log("Email",email);
+  console.log("pass",password);
+  console.log("role",role);
+  console.log("details",companyDetails);
+
 
   if (!email || !password || !companyDetails || !role) {
     return res.status(422).json({ success: false, error: "Must provide email, password, role, and company details" });
