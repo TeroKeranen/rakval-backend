@@ -100,7 +100,7 @@ router.post("/signupAdmin", async (req, res) => {
     // Tarkista onko käyttäjä jo olemassa
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ success: false, error: "Username is already in use" });
+      return res.status(400).json({existingUser: true, success: false, error: "Username is already in use" });
     }
 
     // Luodaan käyttäjä
