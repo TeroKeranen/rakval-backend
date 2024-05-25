@@ -93,7 +93,7 @@ router.post("/signupAdmin", async (req, res) => {
 
   const { name, address, city } = companyDetails;
   if (!name || !address || !city) {
-    return res.status(422).json({ success: false, error: "Must provide full company details including name, address, and city" });
+    return res.status(422).json({invalidData: true, success: false, error: "Must provide full company details including name, address, and city" });
   }
 
   try {
