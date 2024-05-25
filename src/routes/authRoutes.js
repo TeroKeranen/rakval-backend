@@ -91,6 +91,11 @@ router.post("/signupAdmin", async (req, res) => {
     return res.status(422).json({ success: false, error: "Invalid email format" });
   }
 
+  const { name, address, city } = companyDetails;
+  if (!name || !address || !city) {
+    return res.status(422).json({ success: false, error: "Must provide full company details including name, address, and city" });
+  }
+
   try {
     // Tarkista onko käyttäjä jo olemassa
     const existingUser = await User.findOne({ email });
@@ -107,7 +112,7 @@ router.post("/signupAdmin", async (req, res) => {
     
     const { name, address, city } = companyDetails;
     const existingCompany = await Company.findOne({ name });
-    if (existingCompany || !name || !address || !city) {
+    if (existingCompany) {
       await user.remove();  // Poista luotu käyttäjä, jos yrityksen luonti epäonnistuu
       return res.status(422).json({ success: false, error: "Company's name is already used" });
     }
