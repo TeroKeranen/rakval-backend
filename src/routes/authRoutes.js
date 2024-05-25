@@ -107,7 +107,7 @@ router.post("/signupAdmin", async (req, res) => {
     
     const { name, address, city } = companyDetails;
     const existingCompany = await Company.findOne({ name });
-    if (existingCompany) {
+    if (existingCompany || !name || !address || !city) {
       await user.remove();  // Poista luotu käyttäjä, jos yrityksen luonti epäonnistuu
       return res.status(422).json({ success: false, error: "Company's name is already used" });
     }
