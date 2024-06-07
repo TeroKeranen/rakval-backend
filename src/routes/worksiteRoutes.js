@@ -267,10 +267,10 @@ router.put('/worksites/:worksiteId/markers/:markerId', async (req,res) => {
 
     await event.save();
 
-    res.send(worksite);
+    res.json({worksite, success:true});
   } catch (error) {
     
-    res.status(500).send({error: error.message})
+    res.status(500).json({success: false, error: error.message})
   }
 })
 
