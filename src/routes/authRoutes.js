@@ -400,7 +400,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
     user.password = newPassword
     await user.save();
 
-    res.send({message: "password successfully changed"})
+    res.send({message: "password successfully changed", success: true})
   } catch (error) {
     if (error === false) {
       
