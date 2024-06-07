@@ -163,9 +163,9 @@ router.delete('/worksites/:worksiteId/workers/:workerId', async (req,res) => {
     }
     worksite.workers = worksite.workers.filter((id) => id.toString() !== workerId);
     await worksite.save();
-    res.send({worksite, message: "Työntekijä poistettu työmaalta" });
+    res.send({worksite, message: "Työntekijä poistettu työmaalta", success:true });
   } catch (error) {
-     res.status(500).send({ error: "Palvelinvirhe" });
+     res.status(500).send({ error: "Palvelinvirhe", success:false });
   }
 })
 
