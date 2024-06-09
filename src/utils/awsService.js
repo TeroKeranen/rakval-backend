@@ -20,6 +20,7 @@ function getSignedUrl(bucketName, objectKey, expiresInSeconds) {
     return new Promise((resolve, reject) => {
         s3.getSignedUrl('getObject', params, (err, url) => {
             if (err) {
+                console.log("Errorrrr", err)
                 reject(err);
             } else {
                 resolve(url);
