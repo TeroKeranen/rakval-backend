@@ -416,7 +416,7 @@ router.get('/get-signed-url', requierAuth, async (req,res) => {
   const {bucketName, objectKey} = req.query;
   console.log("bucketName, objeckey", bucketName, objectKey)
   try {
-    const url = await getSignedUrl(bucketName, objectKey, 3600);
+    const url = await getSignedUrl(bucketName, objectKey, 30);
     res.json({url})
   } catch (error) {
     res.status(500).json({ error: "Server error while generating signed URL" });
