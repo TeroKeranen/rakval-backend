@@ -414,6 +414,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
 
 router.get('/get-signed-url', requierAuth, async (req,res) => {
   const {bucketName, objectKey} = req.query;
+  console.log("bucketName, objeckey", bucketName, objectKey)
   try {
     const url = await getSignedUrl(bucketName, objectKey, 3600);
     res.json({url})
