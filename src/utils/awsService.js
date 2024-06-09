@@ -13,7 +13,7 @@ const s3 = new AWS.S3();
 function getSignedUrl(bucketName, objectKey, expiresInSeconds) {
     const params = {
         Bucket: bucketName,
-        Key: objectKey,
+        Key: `public/${objectKey}`,
         Expires: expiresInSeconds
     }
 
