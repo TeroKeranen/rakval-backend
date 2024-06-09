@@ -7,6 +7,7 @@ const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
 const { sendVerificationEmail} = require('../utils/emailService');
+const {getSignedUrl} = require('../utils/awsService')
 
 
 const router = express.Router();
@@ -408,6 +409,16 @@ router.post('/change-password', requierAuth, async (req,res) => {
     }
     
     return res.status(422).send({error: "error changing password"})
+  }
+})
+
+router.get('/get-signed-url', requierAuth, async (req,res) => {
+  const {bucketName, objectKey} = req.query;
+  try {
+    const url = await getSignedUrl(bucketName, objectKey, 3600);
+    res.json({url})
+  } catch (error) {
+    res.status(500).json({ error: "Server error while generating signed URL" });
   }
 })
 
