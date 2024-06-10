@@ -400,7 +400,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
     return res.status(422).send({error: "must provide old and new password"})
   }
 
-  if (!passwordRegex.test(password)) {
+  if (!passwordRegex.test(newPassword)) {
     return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
 
