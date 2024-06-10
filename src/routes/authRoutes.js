@@ -397,7 +397,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
   
 
   if (!oldPassword || !newPassword) {
-    return res.status(422).send({error: "must provide old and new password"})
+    return res.status(422).json({ success: false, error: "Must provide both old and new password." });
   }
 
   if (!passwordRegex.test(newPassword)) {
@@ -411,19 +411,18 @@ router.post('/change-password', requierAuth, async (req,res) => {
       return res.status(404).send({error: "User not found"})
     }
 
-    await user.comparePassword(oldPassword);
+    const isMatch = await user.comparePassword(oldPassword);
+
+    if (!isMatch) {
+      return res.status(400).json({ success: false, error: "Invalid old password." });
+    }
     
     user.password = newPassword
     await user.save();
 
-    res.send({message: "password successfully changed", success: true})
+    res.json({ success: true, message: "Password successfully changed." });
   } catch (error) {
-    if (error === false) {
-      
-      return res.status(404).send({error: "Invalid old password"})
-    }
-    
-    return res.status(422).send({error: "error changing password"})
+    return res.status(500).json({ success: false, error: "Error changing password." });
   }
 })
 
