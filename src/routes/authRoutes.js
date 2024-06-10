@@ -401,6 +401,7 @@ router.post('/change-password', requierAuth, async (req,res) => {
   }
 
   if (!passwordRegex.test(newPassword)) {
+    console.log("tämä logataan")
     return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
 
