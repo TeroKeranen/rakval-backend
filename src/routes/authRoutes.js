@@ -98,7 +98,7 @@ router.post("/signupAdmin", async (req, res) => {
   if (!emailRegex.test(email)) {
     return res.status(422).json({ success: false, error: "Invalid email format" });
   }
-  
+
   if (!passwordRegex.test(password)) {
     return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
@@ -398,6 +398,10 @@ router.post('/change-password', requierAuth, async (req,res) => {
 
   if (!oldPassword || !newPassword) {
     return res.status(422).send({error: "must provide old and new password"})
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
 
   try {
