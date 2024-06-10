@@ -27,9 +27,12 @@ function generateUniqueCode() {
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+// Salasanan täytyy olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin
+const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+
 // Funktion luominen access tokenin luomiseen
 function generateAccessToken(user) {
-  return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '1m' })
+  return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '15m' })
 }
 // Funktion luominen refresh tokenin luomiseen
 function generateRefreshToken(user) {
@@ -45,6 +48,10 @@ router.post("/signup", async (req, res) => {
   }
   if (!emailRegex.test(email)) {
     return res.status(422).json({success:false, error: "Invalid email format"})
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
 
   try {
@@ -90,6 +97,10 @@ router.post("/signupAdmin", async (req, res) => {
 
   if (!emailRegex.test(email)) {
     return res.status(422).json({ success: false, error: "Invalid email format" });
+  }
+  
+  if (!passwordRegex.test(password)) {
+    return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
   }
 
   const { name, address, city } = companyDetails;
@@ -416,7 +427,7 @@ router.get('/get-signed-url', requierAuth, async (req,res) => {
   const {bucketName, objectKey} = req.query;
   console.log("bucketName, objeckey", bucketName, objectKey)
   try {
-    const url = await getSignedUrl(bucketName, objectKey, 30);
+    const url = await getSignedUrl(bucketName, objectKey, 3600);
     res.json({url})
   } catch (error) {
     res.status(500).json({ error: "Server error while generating signed URL" });
