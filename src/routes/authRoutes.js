@@ -462,7 +462,7 @@ router.delete('/deleteAccount', requierAuth, async (req,res) => {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    await user.remove();  // Poistaa käyttäjän MongoDB:stä
+    await user.findByIdAndDelete(userId);  // Poistaa käyttäjän MongoDB:stä
         res.json({ success: true, message: 'User account has been successfully deleted' });
   } catch (error) {
      res.status(500).json({ success: false, error: 'Internal server error' });
