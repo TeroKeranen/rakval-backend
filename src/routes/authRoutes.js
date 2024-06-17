@@ -454,6 +454,7 @@ router.get('/aws-url', requierAuth, async (req,res) => {
 router.delete('/deleteAccount', requierAuth, async (req,res) => {
   const userId = req.user._id;
 
+  console.log("user id", userId);
   try {
     const user = await User.findById(userId)
 
