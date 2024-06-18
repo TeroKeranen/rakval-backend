@@ -451,22 +451,21 @@ router.get('/aws-url', requierAuth, async (req,res) => {
 
 })
 
-router.delete('/deleteAccount', requierAuth, async (req,res) => {
+router.delete('/deleteAccount', requireAuth, async (req, res) => {
   const userId = req.user._id;
-
   console.log("user id", userId);
   try {
-    const user = await User.findById(userId)
+    const deleteResult = await User.findByIdAndDelete(userId);
 
-    if (!user) {
+    if (!deleteResult) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    await user.findByIdAndDelete(userId);  // Poistaa käyttäjän MongoDB:stä
-        res.json({ success: true, message: 'User account has been successfully deleted' });
+    res.json({ success: true, message: 'User account has been successfully deleted' });
   } catch (error) {
-     res.status(500).json({ success: false, error: 'Internal server error' });
+    console.error("Delete Error:", error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
-})
+});
 
 module.exports = router;
