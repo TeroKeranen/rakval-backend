@@ -165,12 +165,14 @@ router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
   
   if (!email || !password) {
+    console.log("loginfail 1")
     return res.status(422).send({ error: "Must provide email and password" });
   }
 
   const user = await User.findOne({ email });
   
   if (!user) {
+    console.log("loginfail 2")
     return res.status(404).json({success: false, error: "Email not found" });
   }
   // if (!user.isVerified) {
@@ -190,7 +192,7 @@ router.post("/signin", async (req, res) => {
     res.json({success:true, accessToken, refreshToken, user: { email: user.email, _id: user._id, role: user.role, isVerified: user.isVerified } });
     // res.send({ token, user: {email:user.email,_id:user.id, role: user.role, isVerified: user.isVerified} }); //MUUTOS
   } catch (err) {
-    
+    console.log("loginfail 3")
     return res.status(422).json({success:false, error: "invalid password or email" });
   }
 });
