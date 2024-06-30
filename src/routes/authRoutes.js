@@ -6,7 +6,7 @@ const requierAuth = require("../middlewares/requierAuth");
 const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
-const { sendVerificationEmail} = require('../utils/emailService');
+const { sendVerificationEmail, sendDeleteAccountRequest} = require('../utils/emailService');
 const {getSignedUrl} = require('../utils/awsService')
 
 
@@ -475,9 +475,18 @@ router.post("/sendAccountDelete", requierAuth, async (req,res) => {
   const {title, text} = req.body;
   const user = req.user;
   const userEmail = user.email;
-  console.log("user email", userEmail);
-  console.log("user title", title);
-  console.log("user text", text);
+
+
+  if (!title || !text) {
+    return res.status(422).json({success: false, nodata: true})
+  }
+
+  try {
+    sendDeleteAccountRequest(title,text);
+    res.json({success: true, message: "Email sent successfully"})
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to send email" });
+  }
 
   
 })
