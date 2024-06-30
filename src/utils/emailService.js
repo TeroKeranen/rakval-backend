@@ -7,14 +7,14 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: "terokeranentero@gmail.com",
+        user: "rakivalafinland@gmail.com",
         pass: "guny fdym zdoa emtc"
     }
 })
 
 const sendVerificationEmail = (user,verificationCode) => {
     const mailOptions = {
-        from: "terokeranentero@gmail.com",
+        from: "rakivalafinland@gmail.com",
         to: user.email,
         subject: "Email verification",
         html: `<p>Your verification code is: ${verificationCode}`
@@ -33,8 +33,8 @@ const sendDeleteAccountRequest = (userEmail,title,text) => {
     const mailOptions = {
         from: userEmail,
         to: "rakivalafinland@gmail.com",
-        subject: "Account deletetion request",
-        html: `<p>Title: ${title}</p><p>Text: ${text}</p>`,
+        subject: `Account deletetion request from user: ${userEmail}`,
+        html: `<h1>${title}</h1><p>${text}</p>`,
         replyTo: userEmail
     }
 
