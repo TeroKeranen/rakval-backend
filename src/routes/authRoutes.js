@@ -472,10 +472,14 @@ router.delete('/deleteAccount', requierAuth, async (req, res) => {
 });
 
 router.post("/sendAccountDelete", requierAuth, async (req,res) => {
-  const {userEmail, title, text} = req.body;
+  const {title, text} = req.body;
   const user = req.user;
+  const userEmail = user.email;
+  console.log("user email", userEmail);
+  console.log("user title", title);
+  console.log("user text", text);
 
-  console.log("Deleteaccount user", user);
+  
 })
 
 module.exports = router;
