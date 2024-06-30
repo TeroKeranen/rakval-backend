@@ -482,7 +482,7 @@ router.post("/sendAccountDelete", requierAuth, async (req,res) => {
   }
 
   try {
-    sendDeleteAccountRequest(title,text);
+    sendDeleteAccountRequest(userEmail,title,text);
     res.json({success: true, message: "Email sent successfully"})
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to send email" });
