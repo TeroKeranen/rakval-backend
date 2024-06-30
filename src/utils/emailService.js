@@ -34,7 +34,8 @@ const sendDeleteAccountRequest = (userEmail,title,text) => {
         from: userEmail,
         to: "rakivalafinland@gmail.com",
         subject: "Account deletetion request",
-        html: `<p>Title: ${title}</p><p>Text: ${text}</p>`
+        html: `<p>Title: ${title}</p><p>Text: ${text}</p>`,
+        replyTo: userEmail
     }
 
     transporter.sendMail(mailOptions, function (error, info) {
