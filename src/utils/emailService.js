@@ -29,4 +29,21 @@ const sendVerificationEmail = (user,verificationCode) => {
     })
 }
 
-module.exports = { sendVerificationEmail }
+const sendDeleteAccountRequest = (userEmail,title,text) => {
+    const mailOptions = {
+        from: userEmail,
+        to: "rakivalafinland@gmail.com",
+        subject: "Account deletetion request",
+        html: `<p>Title: ${title}</p><p>Text: ${text}</p>`
+    }
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log("error sending email", error)
+        } else {
+            console.log("Email sent: ", info.response);
+        }
+    })
+}
+
+module.exports = { sendVerificationEmail, sendDeleteAccountRequest }

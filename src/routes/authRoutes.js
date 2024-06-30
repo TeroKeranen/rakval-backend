@@ -455,6 +455,7 @@ router.get('/aws-url', requierAuth, async (req,res) => {
 
 router.delete('/deleteAccount', requierAuth, async (req, res) => {
   const userId = req.user._id;
+
   
   try {
     const deleteResult = await User.findByIdAndDelete(userId);
@@ -469,5 +470,12 @@ router.delete('/deleteAccount', requierAuth, async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
+
+router.post("/sendAccountDelete", requierAuth, async (req,res) => {
+  const {userEmail, title, text} = req.body;
+  const user = req.user;
+
+  console.log("Deleteaccount user", user);
+})
 
 module.exports = router;
