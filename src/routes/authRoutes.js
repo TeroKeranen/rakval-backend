@@ -507,7 +507,7 @@ router.post('/password-reset', async (req,res) => {
   user.resetPasswordToken = resetToken;
   user.resetPassworExpires = Date.now() + 3600000;
   await user.save();
-  passwordReset(email, resetToken);
+  passwordReset(user, resetToken);
 
 })
 
