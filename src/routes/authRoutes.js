@@ -2,11 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto')
 const requierAuth = require("../middlewares/requierAuth");
 const User = mongoose.model("User");
 const Company = mongoose.model('Company')
 const Worksite = mongoose.model('Worksite')
-const { sendVerificationEmail, sendDeleteAccountRequest} = require('../utils/emailService');
+const { sendVerificationEmail, sendDeleteAccountRequest, passwordReset} = require('../utils/emailService');
 const {getSignedUrl} = require('../utils/awsService')
 
 
@@ -38,6 +39,8 @@ function generateAccessToken(user) {
 function generateRefreshToken(user) {
   return jwt.sign({ userId: user._id }, process.env.REFRESH_TOKEN, { expiresIn: '7d' });
 }
+
+
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -489,6 +492,45 @@ router.post("/sendAccountDelete", requierAuth, async (req,res) => {
   }
 
   
+})
+
+router.post('/password-reset', async (req,res) => {
+  
+  const {email} = req.body;
+  const user = await User.findOne({email: email})
+
+  if (!user) {
+    return res.status(400).json({success: false, noUser: true})
+  }
+
+  const resetToken = crypto.randomBytes(20).toString('hex')
+  user.resetPasswordToken = resetToken;
+  user.resetPassworExpires = Date.now() + 3600000;
+  await user.save();
+  passwordReset(email, resetToken);
+
+})
+
+router.post('/reset-password/:token', async (req,res) => {
+  const {token} = req.params;
+  const {newPassword} = req.body;
+
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPassworExpires: { $gt: Date.now() },
+
+  })
+
+  if (!user) {
+    return res.status(400).json({success: false, info: "No user found"})
+  }
+
+  user.password = newPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.status(200).json({success: true, info: 'password changed successfully'})
 })
 
 module.exports = router;
