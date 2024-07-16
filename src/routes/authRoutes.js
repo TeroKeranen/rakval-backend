@@ -519,11 +519,12 @@ router.post('/reset-password/:token', async (req,res) => {
   console.log("newpass", newPassword)
   const user = await User.findOne({
     resetPasswordToken: token,
-    resetPassworExpires: { $gt: Date.now() },
+    resetPasswordExpires: { $gt: Date.now() },
 
   })
   console.log("user", user)
   if (!user) {
+    console.log("No user found with this token or token has expired.");
     return res.status(400).json({success: false, info: "No user found"})
   }
 
