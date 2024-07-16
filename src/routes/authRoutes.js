@@ -502,27 +502,32 @@ router.post('/password-reset', async (req,res) => {
   if (!user) {
     return res.status(400).json({success: false, noUser: true})
   }
+  try {
+    const resetToken = crypto.randomBytes(20).toString('hex')
+    const expires = new Date(Date.now() + 3600000)
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = expires
+    await user.save();
+    passwordReset(user, resetToken);
+    res.json({success: true, message: "password link sended successfully"})
+    
+  } catch (error) {
+    res.status(500).json({success:false, message: "Failed to send password reset email"})
+  }
 
-  const resetToken = crypto.randomBytes(20).toString('hex')
-  const expires = new Date(Date.now() + 3600000)
-  user.resetPasswordToken = resetToken;
-  user.resetPasswordExpires = expires
-  await user.save();
-  passwordReset(user, resetToken);
 
 })
 
 router.post('/reset-password/:token', async (req,res) => {
   const {token} = req.params;
   const {newPassword} = req.body;
-  console.log("token", token);
-  console.log("newpass", newPassword)
+  
   const user = await User.findOne({
     resetPasswordToken: token,
     resetPasswordExpires: { $gt: Date.now() },
 
   })
-  console.log("user", user)
+  
   if (!user) {
     console.log("No user found with this token or token has expired.");
     return res.status(400).json({success: false, info: "No user found"})
