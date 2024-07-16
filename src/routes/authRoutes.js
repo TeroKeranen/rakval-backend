@@ -520,7 +520,7 @@ router.post('/reset-password/:token', async (req,res) => {
     resetPassworExpires: { $gt: Date.now() },
 
   })
-
+  console.log("user", user)
   if (!user) {
     return res.status(400).json({success: false, info: "No user found"})
   }
