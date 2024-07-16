@@ -504,8 +504,9 @@ router.post('/password-reset', async (req,res) => {
   }
 
   const resetToken = crypto.randomBytes(20).toString('hex')
+  const expires = new Date(Date.now() + 3600000)
   user.resetPasswordToken = resetToken;
-  user.resetPassworExpires = Date.now() + 3600000;
+  user.resetPasswordExpires = expires
   await user.save();
   passwordReset(user, resetToken);
 
