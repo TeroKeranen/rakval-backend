@@ -52,10 +52,12 @@ const passwordReset = (user,resetToken) => {
         from: "rakivalafinland@gmail.com",
         to: user.email,
         subject: 'Password Reset',
-        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
-          `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-          `https://rakival.com/reset-password/${resetToken}\n\n` +
-          `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+        html: `
+        <p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>
+        <p>Please click on the button below to complete the process:</p>
+        <a href="https://rakival.com/reset-password/${resetToken}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Reset Password</a>
+        <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
+    `
     }
 
     transporter.sendMail(mailOptions, function (error, info) {
