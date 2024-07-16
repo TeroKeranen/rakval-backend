@@ -532,6 +532,9 @@ router.post('/reset-password/:token', async (req,res) => {
     console.log("No user found with this token or token has expired.");
     return res.status(400).json({success: false, info: "No user found"})
   }
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(422).json({ success: false, passwordtypeError: true, error: "Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin" });
+  }
 
   user.password = newPassword;
   user.resetPasswordToken = undefined;
