@@ -515,7 +515,8 @@ router.post('/password-reset', async (req,res) => {
 router.post('/reset-password/:token', async (req,res) => {
   const {token} = req.params;
   const {newPassword} = req.body;
-
+  console.log("token", token);
+  console.log("newpass", newPassword)
   const user = await User.findOne({
     resetPasswordToken: token,
     resetPassworExpires: { $gt: Date.now() },
