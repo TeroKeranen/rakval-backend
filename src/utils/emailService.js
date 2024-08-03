@@ -1,4 +1,4 @@
-
+require("dotenv").config();
 const nodemailer = require('nodemailer');
 
 // Generoi satunnainen koodi
@@ -7,8 +7,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: "rakivalafinland@gmail.com",
-        pass: "guny fdym zdoa emtc"
+        user: process.env.APP_USERNAME,
+        pass: process.env.APP_PASSWORD
     }
 })
 
