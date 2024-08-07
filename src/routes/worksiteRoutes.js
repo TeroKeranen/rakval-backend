@@ -565,9 +565,7 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
 router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
   const {worksiteId} = req.params;
   const {productName, quantity} = req.body;
-  console.log ("worksiteId", worksiteId);
-  console.log("productname", productName);
-  console.log("quantity", quantity);
+
 
   try {
     const worksite = await Worksite.findById(worksiteId);
@@ -617,8 +615,7 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
 // Poista työmaasta tuote
 router.delete('/worksites/:worksiteId/products/:productId', async (req, res) => {
   const { worksiteId, productId } = req.params;
-  console.log("WORKSITEID",worksiteId);
-  console.log("PRODUCTID",productId);
+  
   try {
     const worksite = await Worksite.findById(worksiteId);
     if (!worksite) {
