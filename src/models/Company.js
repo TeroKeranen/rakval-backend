@@ -35,6 +35,10 @@ const companySchema = new mongoose.Schema({
   },
   subscriptionEndDate: {
     type: Date,
+  },
+  subscriptionType: {
+    type: String,
+
   }
 });
 

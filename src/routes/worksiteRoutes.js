@@ -78,7 +78,7 @@ router.post("/worksites",  async (req,res) => {
     if (!company.isPaid) {
       const worksitesCount = await Worksite.countDocuments({company: company._id})
 
-      if (worksitesCount >= 3) {
+      if (worksitesCount >= 1) {
         
         return res.status(403).json({ success: false, message: "Non-paying companies are limited to 3 worksites." });
       }

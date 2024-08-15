@@ -99,6 +99,39 @@ router.get("/company/:companyId/users", requierAuth, async (req, res) => {
   }
 });
 
+router.post('/updateSubscription', async (req,res) => {
+
+  const { subscriptionType, durationInMonths } = req.body;
+  console.log("JOU", subscriptionType, durationInMonths);
+  try {
+    const userId = req.user._id;
+
+    const company = await Company.findOne({adminId: userId});
+
+    console.log("yritys", company);
+    if (!company) {
+      return res.status(404).json({ success: false, message: "Yritystä ei löydy" });
+    }
+
+    company.isPaid = true;
+    company.subscriptionType = subscriptionType;
+
+    const currentDate = new Date();
+    const endDate = new Date(currentDate.setMonth(currentDate.getMonth() + durationInMonths))
+
+    company.subscriptionEndDate = endDate;
+
+    await company.save();
+
+
+    res.json({ success: true, company });
+  } catch (error) {
+    res.status(500).send({ error: "Palvelinvirhe" });
+  }
+})
+
+
+
 
 
 module.exports = router;
