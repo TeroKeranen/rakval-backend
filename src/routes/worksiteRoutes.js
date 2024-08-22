@@ -334,7 +334,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   const companyId = req.user.company;
   
-  console.log("Starttime", startTime);
+  
   const currentDate = new Date();
   let day = currentDate.getDate().toString();
   let month = (currentDate.getMonth() + 1).toString();
@@ -353,13 +353,13 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
 
     const dateOnly = currentDate.toISOString().split('T')[0];
 
-    const hours = String(currentDate.getHours()).padStart(2, '0');
-    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    // const hours = String(currentDate.getHours()).padStart(2, '0');
+    // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    // const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
-    const timeOnly = `${hours}:${minutes}:${seconds}`;
+    // const timeOnly = `${hours}:${minutes}:${seconds}`;
 
-    console.log("TIMEONLY", timeOnly)
+    
     
     
     worksite.workDays.push({
@@ -394,6 +394,7 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
 
 router.post('/worksites/:worksiteId/endday', requireAuth, async (req, res) => {
   const { worksiteId } = req.params;
+  const {endTime} = req.body;
   const workerId = req.user._id;
   const currentDate = new Date();
   const companyId = req.user.company;
@@ -412,16 +413,17 @@ router.post('/worksites/:worksiteId/endday', requireAuth, async (req, res) => {
     if (!worksite) return res.status(404).send({ error: "Worksite not found" });
 
     const dateOnly = currentDate.toISOString().split('T')[0];
-    const hours = String(currentDate.getHours()).padStart(2, '0');
-    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    // const hours = String(currentDate.getHours()).padStart(2, '0');
+    // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    // const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
-    const timeOnly = `${hours}:${minutes}:${seconds}`;
+    // const timeOnly = `${hours}:${minutes}:${seconds}`;
+
     const workDay = worksite.workDays.find(day => day.workerId.equals(workerId) && !day.endTime);
     if (workDay) {
       workDay.running = false,
       workDay.endDate = thisDay;
-      workDay.endTime = timeOnly;
+      workDay.endTime = endTime;
       await worksite.save();
     }
     
