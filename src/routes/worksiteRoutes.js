@@ -328,12 +328,13 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
   
   
   const {worksiteId} = req.params;
+  const {startTime} = req.body;
   
   const workerId = req.user._id;
   
   const companyId = req.user.company;
   
-
+  console.log("Starttime", startTime);
   const currentDate = new Date();
   let day = currentDate.getDate().toString();
   let month = (currentDate.getMonth() + 1).toString();
@@ -357,12 +358,14 @@ router.post('/worksites/:worksiteId/startday', async (req, res) => {
     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
     const timeOnly = `${hours}:${minutes}:${seconds}`;
+
+    console.log("TIMEONLY", timeOnly)
     
     
     worksite.workDays.push({
       running: true,
       startDate: thisDay,
-      startTime: timeOnly,
+      startTime: startTime,
       workerId });
     
     
