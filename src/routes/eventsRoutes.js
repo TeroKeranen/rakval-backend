@@ -14,7 +14,7 @@ router.use(requireAuth);
 router.get('/events', async (req, res) => {
     try {
         const userId = req.user._id;
-        const isAdmin = req.user.role === 'admin';
+        const isAdmin = req.user.role === 'admin' || req.user.role === "superAdmin";
         
         const user = await User.findById(userId).populate('company');
         const companyId = user.company ? user.company._id : null;
