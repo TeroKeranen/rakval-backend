@@ -1,3 +1,4 @@
+const { Decimal128 } = require('mongodb');
 const mongoose = require('mongoose');
 
 
@@ -20,7 +21,9 @@ const productSchema = new mongoose.Schema({
     default: 0
   },
   price: {
-    type: Number,
+    type: mongoose.Schema.Types.Decimal128, // Käytä Decimal128-tyyppiä
+    get: (v) => parseFloat(v.toString()).toFixed(2), // Muunna kahden desimaalin tarkkuudella lukumuotoon
+    set: (v) => parseFloat(v).toFixed(2) // Aseta aina kahden desimaalin tarkkuudella
   }
 });
 

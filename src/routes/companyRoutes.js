@@ -134,6 +134,13 @@ router.post('/updateSubscription', async (req,res) => {
 router.post("/companyAddProducts", async (req,res) => {
   const {companyId, barcode, name, description, quantity, price} = req.body;
 
+    // Varmista, että price on aina kahden desimaalin tarkkuudella
+    price = parseFloat(parseFloat(price).toFixed(2));
+
+    if (isNaN(price)) {
+      return res.status(400).send({ error: "Virheellinen hinta. Hinta ei voi olla null tai NaN." });
+    }
+
   try {
     const company = await Company.findOne({
       _id: companyId,
