@@ -130,6 +130,37 @@ router.post('/updateSubscription', async (req,res) => {
   }
 })
 
+// Lisätään tuote yrityksen tuotelistaan
+router.post("/companyAddProducts", async (req,res) => {
+  const {companyId, barcode, name, description, quantity, price} = req.body;
+
+  try {
+    const company = await Company.findOne({
+      _id: companyId,
+      $or: [{ adminId: req.user._id }, { workers: req.user._id }]
+    })
+
+    if (!company) {
+      return res.status(404).send({error: "Yritystä ei löydy"})
+    }
+
+    const newProduct = {
+      barcode,
+      name,
+      description,
+      quantity,
+      price
+    }
+
+    company.products.push(newProduct);
+    await company.save();
+
+    res.send(company);
+  } catch (error) {
+    res.status(422).send({ error: error.message });
+  }
+})
+
 
 
 
