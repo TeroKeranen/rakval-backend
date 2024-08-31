@@ -132,7 +132,7 @@ router.post('/updateSubscription', async (req,res) => {
 
 // Lisätään tuote yrityksen tuotelistaan
 router.post("/companyAddProducts", async (req,res) => {
-  const {companyId, barcode, name, description, quantity, price} = req.body;
+  let {companyId, barcode, name, description, quantity, price} = req.body;
 
     // Varmista, että price on aina kahden desimaalin tarkkuudella
     price = parseFloat(parseFloat(price).toFixed(2));
