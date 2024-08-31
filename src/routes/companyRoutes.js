@@ -144,6 +144,19 @@ router.post("/companyAddProducts", async (req,res) => {
       return res.status(404).send({error: "Yritystä ei löydy"})
     }
 
+    // Tarkistetaan, onko tuote jo olemassa yrityksen tuotteissa viivakoodin tai nimen perusteella
+    const existingProduct = company.products.find(
+      (product) => product.barcode === barcode || product.name === name
+    );
+
+
+    if (existingProduct) {
+      // Päivitetään olemassa olevan tuotteen määrä
+      existingProduct.quantity += quantity; // Lisätään nykyiseen määrään uusi määrä
+      await company.save();
+      return res.send({ message: "Tuotteen määrä päivitetty onnistuneesti.", product: existingProduct });
+    }
+    
     const newProduct = {
       barcode,
       name,
