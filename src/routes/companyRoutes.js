@@ -159,7 +159,7 @@ router.post("/companyAddProducts", async (req,res) => {
 
     if (existingProduct) {
       // Päivitetään olemassa olevan tuotteen määrä
-      existingProduct.quantity += quantity; // Lisätään nykyiseen määrään uusi määrä
+      existingProduct.quantity = quantity; // Lisätään nykyiseen määrään uusi määrä
       existingProduct.price = price
       existingProduct.name = name;
       existingProduct.description = description;
