@@ -161,8 +161,12 @@ router.post("/companyAddProducts", async (req,res) => {
       // Päivitetään olemassa olevan tuotteen määrä
       existingProduct.quantity += quantity; // Lisätään nykyiseen määrään uusi määrä
       existingProduct.price = price
-      await company.save();
-      return res.send({ message: "Tuotteen määrä päivitetty onnistuneesti.", product: existingProduct });
+      existingProduct.name = name;
+      existingProduct.description = description;
+      
+      // Palauta koko yrityksen tiedot, mukaan lukien päivitetyt tuotteet
+      const updatedCompany = await Company.findById(companyId); // Haetaan uudestaan, jotta saadaan tuoreet tiedot
+      return res.send(updatedCompany); 
     }
 
     const newProduct = {
@@ -176,7 +180,8 @@ router.post("/companyAddProducts", async (req,res) => {
     company.products.push(newProduct);
     await company.save();
 
-    res.send(company);
+    const updatedCompany = await Company.findById(companyId); // Haetaan uudestaan, jotta saadaan tuoreet tiedot
+    res.send(updatedCompany);
   } catch (error) {
     res.status(422).send({ error: error.message });
   }
