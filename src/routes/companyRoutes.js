@@ -156,7 +156,7 @@ router.post("/companyAddProducts", async (req,res) => {
       await company.save();
       return res.send({ message: "Tuotteen määrä päivitetty onnistuneesti.", product: existingProduct });
     }
-    
+
     const newProduct = {
       barcode,
       name,
@@ -171,6 +171,29 @@ router.post("/companyAddProducts", async (req,res) => {
     res.send(company);
   } catch (error) {
     res.status(422).send({ error: error.message });
+  }
+})
+
+// Haetaan kaikki yrityksen tuotteet
+router.get("companyProducts", async (req,res) => {
+  const {companyId} = req.query;
+
+  try {
+
+    const company = await Company.findOne({
+      _id: companyId,
+      $or: [{ adminId: req.user._id }, { workers: req.user._id }]
+    })
+
+    if (!company) {
+      return res.status(404).send({ error: "Yritystä ei löydy tai sinulla ei ole oikeuksia nähdä tuotteita." });
+    }
+
+    // Palautetaan yrityksen tuotteet
+    res.send({ products: company.products });
+  } catch (error) {
+    console.error("Virhe haettaessa yrityksen tuotteita:", error);
+    res.status(500).send({ error: error.message || "Virhe haettaessa yrityksen tuotteita." });
   }
 })
 
