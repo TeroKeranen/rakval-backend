@@ -175,7 +175,7 @@ router.post("/companyAddProducts", async (req,res) => {
 })
 
 // Haetaan kaikki yrityksen tuotteet
-router.get("companyProducts", async (req,res) => {
+router.get("/companyProducts", async (req,res) => {
   const {companyId} = req.query;
 
   console.log("COOOOOOMPANYID", companyId);
