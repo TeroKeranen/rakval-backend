@@ -4,7 +4,7 @@ const {S3Client, GetObjectCommand} = require("@aws-sdk/client-s3");
 const {getSignedUrl} = require("@aws-sdk/s3-request-presigner");
 const { Credentials } = require("aws-sdk");
 
-const S3Client = new S3Client({
+const s3Client = new S3Client({
     region: "eu-west-1",
     credentials: {
         accessKeyId: process.env.AWS_ACCESSKEYID,
