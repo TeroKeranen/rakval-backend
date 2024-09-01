@@ -134,7 +134,7 @@ router.post('/updateSubscription', async (req,res) => {
 router.post("/companyAddProducts", async (req,res) => {
   let {companyId, barcode, name, description, quantity, price} = req.body;
 
-  console.log("quantitititit1", quantity);
+  console.log("quantitititit1", typeof(quantity));
 
     // Varmista, että price on aina kahden desimaalin tarkkuudella
     price = parseFloat(parseFloat(price).toFixed(2));
