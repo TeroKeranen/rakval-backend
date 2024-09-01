@@ -168,7 +168,7 @@ router.post("/companyAddProducts", async (req,res) => {
       existingProduct.price = price
       existingProduct.name = name;
       existingProduct.description = description;
-      
+      await company.save();
       // Palauta koko yrityksen tiedot, mukaan lukien päivitetyt tuotteet
       const updatedCompany = await Company.findById(companyId); // Haetaan uudestaan, jotta saadaan tuoreet tiedot
       return res.send(updatedCompany); 
