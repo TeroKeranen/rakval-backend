@@ -134,6 +134,8 @@ router.post('/updateSubscription', async (req,res) => {
 router.post("/companyAddProducts", async (req,res) => {
   let {companyId, barcode, name, description, quantity, price} = req.body;
 
+  console.log("quantitititit1", quantity);
+
     // Varmista, että price on aina kahden desimaalin tarkkuudella
     price = parseFloat(parseFloat(price).toFixed(2));
 
@@ -155,6 +157,9 @@ router.post("/companyAddProducts", async (req,res) => {
     const existingProduct = company.products.find(
       (product) => product.barcode === barcode || product.name === name
     );
+
+    console.log("ON VALMIS TUOTE", existingProduct.quantity);
+    console.log("quantity type of", typeof(existingProduct.quantity));
 
 
     if (existingProduct) {
