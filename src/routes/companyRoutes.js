@@ -134,13 +134,17 @@ router.post('/updateSubscription', async (req,res) => {
 router.post("/companyAddProducts", async (req,res) => {
   let {companyId, barcode, name, description, quantity, price} = req.body;
 
-  console.log("quantitititit1", typeof(quantity));
+  console.log("quantitititit1", typeof(quantity), quantity);
 
     // Varmista, että price on aina kahden desimaalin tarkkuudella
     price = parseFloat(parseFloat(price).toFixed(2));
 
     if (isNaN(price)) {
       return res.status(400).send({ error: "Virheellinen hinta. Hinta ei voi olla null tai NaN." });
+    }
+
+    if (typeof quantity === 'undefined' || isNaN(quantity) || quantity < 0) {
+      return res.status(400).send({ error: "Virheellinen määrä. Määrä ei voi olla undefined, negatiivinen tai NaN." });
     }
 
   try {
@@ -158,11 +162,11 @@ router.post("/companyAddProducts", async (req,res) => {
       (product) => product.barcode === barcode || product.name === name
     );
 
-    console.log("ON VALMIS TUOTE", existingProduct.quantity);
-    console.log("quantity type of", typeof(existingProduct.quantity));
-
-
+    
+    
     if (existingProduct) {
+      console.log("ON VALMIS TUOTE", existingProduct.quantity);
+      console.log("quantity type of", typeof(existingProduct.quantity));
       // Päivitetään olemassa olevan tuotteen määrä
       existingProduct.quantity = quantity; // Lisätään nykyiseen määrään uusi määrä
       existingProduct.price = price
@@ -178,7 +182,7 @@ router.post("/companyAddProducts", async (req,res) => {
       barcode,
       name,
       description,
-      quantity,
+      quantity: Number(quantity),
       price
     }
 
