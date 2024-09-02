@@ -616,6 +616,8 @@ router.post(`/worksites/:worksiteId/add-product`, async (req, res) => {
       // Vähennä yrityksen tuotteen määrä
       companyProduct.quantity -= quantity;
       await company.save();
+
+      
     }
 
     const newProduct = {
@@ -629,7 +631,10 @@ router.post(`/worksites/:worksiteId/add-product`, async (req, res) => {
     worksite.products.push(newProduct);
     await worksite.save();
 
-    res.status(201).json({ success: true, message: "Tuote lisätty onnistuneesti", worksite });
+    // Palauta sekä päivitetty työmaa että yritys
+    const updatedCompany = await Company.findById(companyId); // Haetaan uudestaan, jotta saadaan tuoreet tiedot
+
+    res.status(201).json({ success: true, message: "Tuote lisätty onnistuneesti", worksite, company: updatedCompany });
   } catch (error) {
     res.status(500).json({ success: false, message: "Virhe tuotteen lisäämisessä", error: error.message });
   }
