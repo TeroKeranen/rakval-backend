@@ -24,10 +24,30 @@ const floorplanSchema = new mongoose.Schema({
   title: String
 })
 
+// Tuote-scheman määrittely
 const productSchema = new mongoose.Schema({
-  name: String,
-  quantity: Number
-})
+  barcode: {
+    type: String,
+    
+    unique: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+  },
+  quantity: {
+    type: Number,
+    default: 0
+  },
+  price: {
+    type: mongoose.Schema.Types.Decimal128, // Käytä Decimal128-tyyppiä
+    get: (v) => parseFloat(v.toString()).toFixed(2), // Muunna kahden desimaalin tarkkuudella lukumuotoon
+    set: (v) => parseFloat(v).toFixed(2) // Aseta aina kahden desimaalin tarkkuudella
+  }
+});
 
 
 const worksiteSchema = new mongoose.Schema({

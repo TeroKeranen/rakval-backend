@@ -566,11 +566,32 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
     res.status(500).json({ error: "Palvelinvirhe" });
   }
 })
-// Lisää tuote työmaalle
-router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
-  const {worksiteId} = req.params;
-  const {productName, quantity} = req.body;
+// // Lisää tuote työmaalle
+// router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
+//   const {worksiteId} = req.params;
+//   const {productName, quantity} = req.body;
 
+
+//   try {
+//     const worksite = await Worksite.findById(worksiteId);
+
+//     if (!worksite) {
+//       return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
+//     }
+//     const newProduct = { name: productName, quantity: quantity };
+//     worksite.products.push(newProduct)
+//     await worksite.save();
+
+//     res.status(201).json({ success: true, message: "Tuote lisätty onnistuneesti", worksite });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: "Virhe tuotteen lisäämisessä", error: error.message });
+//   }
+// })
+
+// Lisää tuote työmaalle
+router.post(`/worksites/:worksiteId/add-product`, async (req, res) => {
+  const { worksiteId } = req.params;
+  const { productName, quantity, description, barcode, price } = req.body; // Lisää kaikki tarvittavat kentät
 
   try {
     const worksite = await Worksite.findById(worksiteId);
@@ -578,15 +599,23 @@ router.post(`/worksites/:worksiteId/add-product`, async (req,res) => {
     if (!worksite) {
       return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
     }
-    const newProduct = { name: productName, quantity: quantity };
-    worksite.products.push(newProduct)
+
+    const newProduct = {
+      name: productName,
+      quantity: quantity,
+      description: description,
+      barcode: barcode,
+      price: price,
+    };
+
+    worksite.products.push(newProduct);
     await worksite.save();
 
     res.status(201).json({ success: true, message: "Tuote lisätty onnistuneesti", worksite });
   } catch (error) {
     res.status(500).json({ success: false, message: "Virhe tuotteen lisäämisessä", error: error.message });
   }
-})
+});
 
 // muokkaa työmaan tuotetta
 router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
