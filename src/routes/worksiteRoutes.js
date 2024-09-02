@@ -591,13 +591,31 @@ router.delete('/worksites/:worksiteId/calendar-entry/:entryId', async (req,res) 
 // Lisää tuote työmaalle
 router.post(`/worksites/:worksiteId/add-product`, async (req, res) => {
   const { worksiteId } = req.params;
-  const { productName, quantity, description, barcode, price } = req.body; // Lisää kaikki tarvittavat kentät
+  const { productName, quantity, description, barcode, price,companyId } = req.body; // Lisää kaikki tarvittavat kentät
 
   try {
     const worksite = await Worksite.findById(worksiteId);
+    const company = await Company.findById(companyId);
 
     if (!worksite) {
       return res.status(404).json({ success: false, message: "Työmaata ei löytynyt" });
+    }
+
+    if (!company) {
+      return res.status(404).json({ success: false, message: "Yritystä ei löytynyt" });
+    }
+
+    // Tarkista, onko tuote olemassa yrityksen tuotteissa
+    const companyProduct = company.products.find((product) => product.barcode === barcode);
+
+    if (companyProduct) {
+      if (companyProduct.quantity < quantity) {
+        return res.status(400).json({ success: false, stockvaluelow: true, message: "Ei tarpeeksi tuotteita yrityksen varastossa" });
+      }
+
+      // Vähennä yrityksen tuotteen määrä
+      companyProduct.quantity -= quantity;
+      await company.save();
     }
 
     const newProduct = {
