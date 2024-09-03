@@ -643,7 +643,7 @@ router.post(`/worksites/:worksiteId/add-product`, async (req, res) => {
 // muokkaa työmaan tuotetta
 router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
   const { worksiteId, productId } = req.params;
-  const { productName, quantity } = req.body; // Oletetaan, että nämä kentät on lähetetty pyynnössä
+  const { productName, quantity, companyId, barcode } = req.body; // Oletetaan, että nämä kentät on lähetetty pyynnössä
 
   try {
     const worksite = await Worksite.findById(worksiteId);
@@ -657,9 +657,33 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
       return res.status(404).json({ success: false, message: "Tuotetta ei löytynyt" });
     }
 
+    const originalQuantity = worksite.products[productIndex].quantity; // Tallenna alkuperäinen määrä
+
     // Päivitä tuotteen tiedot
     if (productName) worksite.products[productIndex].name = productName;
     if (quantity) worksite.products[productIndex].quantity = quantity;
+
+        // Tarkista, onko tuote yrityksen tuotteista
+        if (companyId && barcode) {
+          const company = await Company.findById(companyId);
+          if (!company) {
+            return res.status(404).json({ success: false, message: "Yritystä ei löytynyt" });
+          }
+    
+          const companyProduct = company.products.find(product => product.barcode === barcode);
+          if (companyProduct) {
+            // Laske määrän muutos
+            const quantityChange = quantity - originalQuantity;
+            // Päivitä yrityksen tuote
+            companyProduct.quantity -= quantityChange;
+    
+            if (companyProduct.quantity < 0) {
+              return res.status(400).json({ success: false, message: "Yrityksessä ei ole tarpeeksi tuotteita varastossa." });
+            }
+    
+            await company.save();
+          }
+        }
 
     await worksite.save();
 
