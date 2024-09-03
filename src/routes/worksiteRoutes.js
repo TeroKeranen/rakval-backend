@@ -673,16 +673,16 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
           }
     
           const companyProduct = company.products.find(product => product.barcode === barcode);
-          console.log("companyProduct", companyProduct)
+          
           if (companyProduct) {
-            console.log("On yrityksen databasessa oleva tuote")
+            
             // Laske määrän muutos
             const quantityChange = quantity - originalQuantity;
             // Päivitä yrityksen tuote
             companyProduct.quantity -= quantityChange;
     
             if (companyProduct.quantity < 0) {
-              return res.status(400).json({ success: false, message: "Yrityksessä ei ole tarpeeksi tuotteita varastossa." });
+              return res.status(400).json({ success: false, stockvaluelow: true, message: "Yrityksessä ei ole tarpeeksi tuotteita varastossa." });
             }
     
             await company.save();
