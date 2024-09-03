@@ -645,7 +645,7 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
   const { worksiteId, productId } = req.params;
   const { productName, quantity, companyId, barcode } = req.body; // Oletetaan, että nämä kentät on lähetetty pyynnössä
 
-  console.log("baarikoodi", barcode)
+  
 
   try {
     const worksite = await Worksite.findById(worksiteId);
@@ -662,8 +662,8 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
     const originalQuantity = worksite.products[productIndex].quantity; // Tallenna alkuperäinen määrä
 
     // Päivitä tuotteen tiedot
-    if (productName) worksite.products[productIndex].name = productName;
-    if (quantity) worksite.products[productIndex].quantity = quantity;
+    if (productName !== undefined) worksite.products[productIndex].name = productName;
+    if (quantity !== undefined) worksite.products[productIndex].quantity = quantity;
 
         // Tarkista, onko tuote yrityksen tuotteista
         if (companyId && barcode) {
