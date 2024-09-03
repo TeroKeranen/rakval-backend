@@ -645,6 +645,8 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
   const { worksiteId, productId } = req.params;
   const { productName, quantity, companyId, barcode } = req.body; // Oletetaan, että nämä kentät on lähetetty pyynnössä
 
+  console.log("baarikoodi", barcode)
+
   try {
     const worksite = await Worksite.findById(worksiteId);
     if (!worksite) {
@@ -671,6 +673,7 @@ router.put('/worksites/:worksiteId/products/:productId', async (req, res) => {
           }
     
           const companyProduct = company.products.find(product => product.barcode === barcode);
+          console.log("companyProduct", companyProduct)
           if (companyProduct) {
             console.log("On yrityksen databasessa oleva tuote")
             // Laske määrän muutos
