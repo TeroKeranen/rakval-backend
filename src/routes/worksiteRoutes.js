@@ -399,6 +399,8 @@ router.post('/worksites/:worksiteId/endday', requireAuth, async (req, res) => {
   const currentDate = new Date();
   const companyId = req.user.company;
 
+  
+
   let day = currentDate.getDate().toString();
   let month = (currentDate.getMonth() + 1).toString();
   let year = currentDate.getFullYear();
