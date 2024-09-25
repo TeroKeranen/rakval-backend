@@ -31,6 +31,11 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 // Salasanan täytyy olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin
 const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
 
+const password = 'test123!*?'
+const isValid = passwordRegex.test(password);
+
+console.log("isvalid", isValid);
+
 // Funktion luominen access tokenin luomiseen
 function generateAccessToken(user) {
   return jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN,{ expiresIn: '15m' })
