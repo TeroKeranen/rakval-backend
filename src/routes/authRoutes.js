@@ -29,12 +29,10 @@ function generateUniqueCode() {
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 // Salasanan täytyy olla vähintään 6 merkkiä pitkä ja sisältää ainakin yhden erikoismerkin
-const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+// const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+const passwordRegex = /^(?=.*[\W])[A-Za-z\d\W]{6,}$/;
 
-const password = 'test123!*?'
-const isValid = passwordRegex.test(password);
 
-console.log("isvalid", isValid);
 
 // Funktion luominen access tokenin luomiseen
 function generateAccessToken(user) {
