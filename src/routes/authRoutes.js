@@ -230,6 +230,7 @@ router.post('/refresh', async (req,res) => {
   const refreshToken = req.body.token;
   
   if (!refreshToken) {
+    console.error("/REFRESH ERROR 1")
     return res.status(401).send({error: 'Refresh token required'})
   }
   try {
@@ -243,12 +244,14 @@ router.post('/refresh', async (req,res) => {
     //   return res.status(403).send({error: 'invalid refres token'})
     // }
     if (!user || !user.refreshToken.includes(refreshToken)) {
+      console.error("/REFRESH ERROR 2")
       return res.status(403).send({error: 'invalid refresh token'})
     }
     const newAccessToken = generateAccessToken(user);
     
     res.send({accessToken: newAccessToken, refreshToken: refreshToken})
   } catch (error) {
+    console.error("/REFRESH ERROR 3")
     return res.status(403).send({error: 'invalid or expired refresh token'})
   }
 })

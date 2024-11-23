@@ -9,7 +9,7 @@ module.exports = (req,res, next) => {
 
     
     if (!authorization) {
-        
+        console.error("REQUIREAUTH")
         return res.status(401).send({error: "you must be log in"});
     }
 
@@ -18,7 +18,7 @@ module.exports = (req,res, next) => {
     
     jwt.verify(token, process.env.ACCESS_TOKEN, async (error, payload) => {
       if (error) {
-        
+        console.error("REQUIREAUTH 2")
         return res.status(401).send({ error: "You must be logged in. " });
       }
       
